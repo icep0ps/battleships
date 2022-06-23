@@ -1,0 +1,14 @@
+.player {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  width: 350px;
+  height: 350px;
+}
+[data-coordinate] {
+  outline: 1px solid black;
+}
+main {
+  display: flex;
+  justify-content: space-evenly;
+}
