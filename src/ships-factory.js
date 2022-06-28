@@ -10,7 +10,7 @@ const ship = (length) => {
   const isSink = () => {
     return shipLength == shipHits.length ? true : false;
   };
-  return { hit, shipHits, isSink };
+  return { hit, shipHits, isSink, shipLength };
 };
 
 export { ship };

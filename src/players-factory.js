@@ -1,16 +1,25 @@
 import { gameboard } from './gameboard-factory';
 
-const player = (name) => {
-  const playerName = name;
-  const turn = true;
-  const board = gameboard;
+const player = (arg) => {
+  const name = arg;
+  const board = gameboard();
   const attack = (coordinates, enemyBoard) =>
     enemyBoard.receiveAttack(coordinates);
-  return { playerName, turn, board, attack };
+
+  const randomize = () => {
+    for (let i = 0; i < 5; i++) {
+      let coordinate1 = Math.floor(Math.random() * 10);
+      let coordinate2 = Math.floor(Math.random() * 10);
+      let shipLength = Math.floor(Math.random() * 5);
+      console.log(coordinate1, coordinate2);
+      board.placeShip(coordinate1, coordinate2, 3);
+    }
+  };
+
+  return { board, attack, randomize, name };
 };
 
 const computer = {
-  turn: false,
   board: gameboard,
   genarateCoordinates: () => {
     let arr = [];

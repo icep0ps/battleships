@@ -11,4 +11,16 @@
 main {
   display: flex;
   justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.mark {
+  background-color: green;
+}
+
+.hit {
+  background-color: red;
+}
+.miss {
+  background-color: blue;
 }
