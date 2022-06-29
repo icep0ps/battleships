@@ -3,37 +3,62 @@ const tempPlayers = [];
 const playerOne = player('jeff');
 playerOne.randomize();
 tempPlayers.push(playerOne);
-const AI = player('ai');
+const AI = computer('ai');
 AI.randomize();
 tempPlayers.push(AI);
 
 const attacking = (() => {
   let turn = 1;
   let currentPlayer = playerOne;
+  let currentEnemy = AI;
   const switchTurns = () => {
     if (turn) {
       currentPlayer = AI;
+      currentEnemy = playerOne;
       turn--;
     } else {
       currentPlayer = playerOne;
-
+      currentEnemy = AI;
       turn++;
     }
   };
 
-  const attack = (coordinates) => {
-    const playerTwo = document.querySelector(`#${currentPlayer.name}`);
-    const data = coordinates.target.getAttribute('data-coordinate');
-    if (currentPlayer.board.receiveAttack(data)) {
-      const target = playerTwo.querySelector(`[data-coordinate="${data}"]`);
-      target.classList.add('hit');
+  const gameOver = () => {
+    if (currentEnemy.board.allShipsSunk()) {
+      console.log('gameover');
     } else {
-      const target = playerTwo.querySelector(`[data-coordinate="${data}"]`);
-      target.classList.add('miss');
+      ('none');
     }
-    switchTurns();
+  };
+
+  const playerAttack = (e) => {
+    const coordianate = e.target.getAttribute('data-coordinate');
+    if (currentPlayer.attack(coordianate, currentEnemy.board)) {
+      e.target.setAttribute('class', 'hit');
+    } else {
+      e.target.setAttribute('class', 'miss');
+    }
     gameOver();
   };
+
+  const enemyAttack = () => {
+    const coordianate = AI.genarateCoordinates();
+    const target = document.querySelector('#jeff');
+    const box = target.querySelector(`[data-coordinate="${coordianate}"]`);
+    if (currentPlayer.attack(coordianate, currentEnemy.board)) {
+      box.setAttribute('class', 'hit');
+    } else {
+      box.setAttribute('class', 'miss');
+    }
+    gameOver();
+    switchTurns();
+  };
+
+  function attack(e) {
+    playerAttack(e);
+    switchTurns();
+    setTimeout(enemyAttack, 500);
+  }
 
   return { attack, switchTurns, currentPlayer };
 })();
@@ -55,15 +80,16 @@ const renderBoards = (() => {
 
   function createPlayerOneBoard() {
     tempPlayers.forEach((dude) => {
-      console.log(dude.board.shipCoordinates);
       const players = document.querySelector(`#${dude.name}`);
       dude.board.shipCoordinates.forEach((coordinate) => {
         const target = players.querySelectorAll(`[data-coordinate]`);
-        Array.from(target).forEach((coordinate) => {
-          coordinate.addEventListener('click', attacking.attack, {
-            once: true,
+        if (dude.name == 'ai') {
+          Array.from(target).forEach((coordinate) => {
+            coordinate.addEventListener('click', attacking.attack, {
+              once: true,
+            });
           });
-        });
+        }
         const test = Array.from(target).filter((item) => {
           return (
             [item.getAttribute('data-coordinate')][0] == coordinate.location[0]
@@ -92,13 +118,5 @@ const renderBoards = (() => {
 
   return { createBoards };
 })();
-
-const gameOver = () => {
-  if (playerOne.board.allShipsSunk()) {
-    console.log('gameover');
-  } else {
-    ('none');
-  }
-};
 
 export { renderBoards };
