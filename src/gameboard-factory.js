@@ -7,19 +7,26 @@ const gameboard = () => {
     const carrier = BattleShip(length);
     const shipDetails = {
       ship: carrier,
-      location: [`${coordinates1},${coordinates2}`],
+      location: [],
     };
+    for (let i = 0; i < length; i++) {
+      const first = coordinates1 + i;
+      const sec = coordinates2;
+      const posotion = i;
+      shipDetails.location.push(`${first},${sec},${posotion}`);
+    }
     shipCoordinates.push(shipDetails);
   };
   const receiveAttack = (coordinates) => {
     return shipCoordinates.some((coordinate) => {
-      if (coordinate.location == coordinates) {
-        coordinate.ship.hit(1);
-        return true;
-      } else {
-        missed.push(coordinates);
-        return false;
-      }
+      coordinate.location.forEach((coord) => {
+        coord.substring(0, 3) == coordinates
+          ? coordinate.ship.hit(coord.substring(4))
+          : missed.push(coordinates);
+      });
+      return coordinate.location.some(
+        (coord) => coord.substring(0, 3) == coordinates
+      );
     });
   };
 

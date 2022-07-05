@@ -8,11 +8,16 @@ const player = (arg) => {
   };
 
   const randomize = () => {
-    for (let i = 0; i < 5; i++) {
+    for (let i = 5; i > 0; i--) {
       let coordinate1 = Math.floor(Math.random() * 10);
       let coordinate2 = Math.floor(Math.random() * 10);
-      let shipLength = Math.floor(Math.random() * 5);
-      board.placeShip(coordinate1, coordinate2, 3);
+      if (i == 3) {
+        for (let x = 0; x < 2; x++) {
+          board.placeShip(coordinate1, coordinate2, 3);
+        }
+      } else {
+        board.placeShip(coordinate1, coordinate2, i);
+      }
     }
   };
 
@@ -33,22 +38,27 @@ const computer = (user) => {
   const coordinatesUsed = [];
   const verify = (arr) => {
     if (coordinatesUsed.includes(arr)) {
-      genarateCoordinates();
+      return genarateCoordinates();
     } else {
       coordinatesUsed.push(arr);
-
-      return `${arr[0]},${arr[1]}`;
+      console.log(`${arr[0]},${arr[1]}`);
+      return arr[0] + ',' + arr[1];
     }
   };
   const attack = (coordinates, enemyBoard) =>
     enemyBoard.receiveAttack(coordinates);
 
   const randomize = () => {
-    for (let i = 0; i < 5; i++) {
+    for (let i = 5; i > 0; i--) {
       let coordinate1 = Math.floor(Math.random() * 10);
       let coordinate2 = Math.floor(Math.random() * 10);
-      let shipLength = Math.floor(Math.random() * 5);
-      board.placeShip(coordinate1, coordinate2, 1);
+      if (i == 3) {
+        for (let x = 0; x < 2; x++) {
+          board.placeShip(coordinate1, coordinate2, 3);
+        }
+      } else {
+        board.placeShip(coordinate1, coordinate2, i);
+      }
     }
   };
   return { board, attack, genarateCoordinates, randomize, name };

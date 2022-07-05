@@ -1,10 +1,18 @@
 import { player, computer } from './players-factory';
 const tempPlayers = [];
 const playerOne = player('jeff');
-playerOne.randomize();
-tempPlayers.push(playerOne);
+playerOne.board.placeShip(3, 4, 5);
+playerOne.board.placeShip(8, 6, 2);
+playerOne.board.placeShip(1, 7, 3);
+playerOne.board.placeShip(5, 5, 3);
+playerOne.board.placeShip(1, 2, 1);
 const AI = computer('ai');
-AI.randomize();
+AI.board.placeShip(3, 4, 5);
+AI.board.placeShip(8, 6, 2);
+AI.board.placeShip(1, 7, 3);
+AI.board.placeShip(5, 5, 3);
+AI.board.placeShip(1, 2, 1);
+tempPlayers.push(playerOne);
 tempPlayers.push(AI);
 
 const attacking = (() => {
@@ -26,8 +34,6 @@ const attacking = (() => {
   const gameOver = () => {
     if (currentEnemy.board.allShipsSunk()) {
       console.log('gameover');
-    } else {
-      ('none');
     }
   };
 
@@ -45,6 +51,7 @@ const attacking = (() => {
     const coordianate = AI.genarateCoordinates();
     const target = document.querySelector('#jeff');
     const box = target.querySelector(`[data-coordinate="${coordianate}"]`);
+    console.log(coordianate);
     if (currentPlayer.attack(coordianate, currentEnemy.board)) {
       box.setAttribute('class', 'hit');
     } else {
@@ -57,7 +64,7 @@ const attacking = (() => {
   function attack(e) {
     playerAttack(e);
     switchTurns();
-    setTimeout(enemyAttack, 500);
+    setTimeout(enemyAttack, 200);
   }
 
   return { attack, switchTurns, currentPlayer };
@@ -80,6 +87,7 @@ const renderBoards = (() => {
 
   function createPlayerOneBoard() {
     tempPlayers.forEach((dude) => {
+      console.log(dude);
       const players = document.querySelector(`#${dude.name}`);
       dude.board.shipCoordinates.forEach((coordinate) => {
         const target = players.querySelectorAll(`[data-coordinate]`);
@@ -90,25 +98,21 @@ const renderBoards = (() => {
             });
           });
         }
-        const test = Array.from(target).filter((item) => {
-          return (
-            [item.getAttribute('data-coordinate')][0] == coordinate.location[0]
-          );
+        let final = [];
+        coordinate.location.forEach((locate) => {
+          const test = Array.from(target);
+          for (const coord of test) {
+            if (
+              coord.getAttribute('data-coordinate') == locate.substring(0, 3)
+            ) {
+              final.push(coord);
+            }
+          }
         });
-        test.forEach((item) => {
+
+        final.forEach((item) => {
           item.setAttribute('class', 'mark');
         });
-        // test.forEach((item) => {
-        //   for (let x = 0; x < coordinate.ship.shipLength; x++) {
-        //     const num = Number(coordinate.location[0].charAt(2));
-        //     const box = players.querySelector(
-        //       `[data-coordinate="${Number(coordinate.location[0].charAt(0))},${
-        //         num + x
-        //       }"]`
-        //     );
-        //     box.setAttribute('class', 'mark');
-        //   }
-        // });
       });
     });
   }
