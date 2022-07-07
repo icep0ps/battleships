@@ -4,6 +4,7 @@ const gameboard = () => {
   const shipCoordinates = [];
 
   const placeShip = (coordinates1, coordinates2, length) => {
+    console.log(coordinates1, coordinates2, length);
     const carrier = BattleShip(length);
     const shipDetails = {
       ship: carrier,

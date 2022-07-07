@@ -1,21 +1,17 @@
 import { player, computer } from './players-factory';
 const tempPlayers = [];
 const playerOne = player('jeff');
-playerOne.board.placeShip(3, 4, 5);
-playerOne.board.placeShip(8, 6, 2);
-playerOne.board.placeShip(1, 7, 3);
-playerOne.board.placeShip(5, 5, 3);
-playerOne.board.placeShip(1, 2, 1);
 const AI = computer('ai');
-AI.board.placeShip(3, 4, 5);
-AI.board.placeShip(8, 6, 2);
-AI.board.placeShip(1, 7, 3);
-AI.board.placeShip(5, 5, 3);
-AI.board.placeShip(1, 2, 1);
+// AI.board.placeShip(3, 4, 5);
+// AI.board.placeShip(8, 6, 2);
+// AI.board.placeShip(1, 7, 3);
+// AI.board.placeShip(5, 5, 3);
+// AI.board.placeShip(1, 2, 1);
 tempPlayers.push(playerOne);
-tempPlayers.push(AI);
 
 const attacking = (() => {
+  let endgame = false;
+
   let turn = 1;
   let currentPlayer = playerOne;
   let currentEnemy = AI;
@@ -32,9 +28,7 @@ const attacking = (() => {
   };
 
   const gameOver = () => {
-    if (currentEnemy.board.allShipsSunk()) {
-      console.log('gameover');
-    }
+    currentEnemy.board.allShipsSunk() ? (endgame = true) : false;
   };
 
   const playerAttack = (e) => {
@@ -44,7 +38,6 @@ const attacking = (() => {
     } else {
       e.target.setAttribute('class', 'miss');
     }
-    gameOver();
   };
 
   const enemyAttack = () => {
@@ -57,7 +50,6 @@ const attacking = (() => {
     } else {
       box.setAttribute('class', 'miss');
     }
-    gameOver();
     switchTurns();
   };
 
@@ -118,9 +110,49 @@ const renderBoards = (() => {
   }
 
   createBoards();
-  createPlayerOneBoard();
 
   return { createBoards };
 })();
 
 export { renderBoards };
+
+const setup = (() => {
+  function createPlayerOneBoard() {
+    playerOne.board.shipCoordinates.forEach((coordinate) => {
+      const target = document.querySelectorAll(`[data-coordinate]`);
+      let final = [];
+      coordinate.location.forEach((locate) => {
+        const test = Array.from(target);
+        for (const coord of test) {
+          if (coord.getAttribute('data-coordinate') == locate.substring(0, 3)) {
+            final.push(coord);
+          }
+        }
+      });
+
+      final.forEach((item) => {
+        item.setAttribute('class', 'mark');
+      });
+    });
+  }
+
+  const ships = [5, 4, 3, 3, 1];
+  const grids = document.querySelectorAll(`[data-coordinate]`);
+  const place = (e) => {
+    if (ships.length > 0) {
+      const currentShip = ships.shift();
+      const coords = e.target.getAttribute('data-coordinate');
+      const y = coords[0];
+      const x = coords[2];
+      const total = Number(y) + Number(currentShip);
+
+      if (total <= 10) {
+        playerOne.board.placeShip(Number(y), Number(x), currentShip);
+        createPlayerOneBoard();
+      }
+    }
+  };
+  grids.forEach((grid) => {
+    grid.addEventListener('click', place, { once: true });
+  });
+})();
