@@ -25,6 +25,11 @@ main {
   border: 3px solid blue;
 }
 
+.hover {
+  border: 3px solid blue;
+  opacity: 0.5;
+}
+
 .hit {
   background-color: red;
 }

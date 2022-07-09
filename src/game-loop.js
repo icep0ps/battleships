@@ -155,4 +155,31 @@ const setup = (() => {
   grids.forEach((grid) => {
     grid.addEventListener('click', place, { once: true });
   });
+
+  grids.forEach((grid) => {
+    grid.addEventListener('mouseover', (e) => {
+      const currentCord = e.target.getAttribute(`data-coordinate`);
+      let boxes = [];
+      const first = Number(currentCord[0]);
+      const total = Number(first) + ships.length;
+      if (total <= 10) {
+        for (let i = 0; i < ships.length; i++) {
+          const first = Number(currentCord[0]) + i;
+          const sec = currentCord[2];
+          const box = document.querySelector(
+            `[data-coordinate="${first},${sec}"]`
+          );
+          boxes.push(box);
+        }
+      }
+      boxes.forEach((item) => {
+        item.classList.add('hover');
+      });
+      grid.addEventListener('mouseout', (e) => {
+        boxes.forEach((item) => {
+          item.classList.remove('hover');
+        });
+      });
+    });
+  });
 })();
