@@ -1,18 +1,19 @@
 import { ship as BattleShip } from './ships-factory';
+import { mouseEvents } from './board-setup';
 
 const gameboard = () => {
   const shipCoordinates = [];
 
   const placeShip = (coordinates1, coordinates2, length) => {
-    console.log(coordinates1, coordinates2, length);
     const carrier = BattleShip(length);
     const shipDetails = {
       ship: carrier,
       location: [],
     };
     for (let i = 0; i < length; i++) {
-      const first = coordinates1 + i;
-      const sec = coordinates2;
+      let first = coordinates1;
+      let sec = coordinates2;
+      mouseEvents.horizontal ? (first += i) : (sec += i);
       const posotion = i;
       shipDetails.location.push(`${first},${sec},${posotion}`);
     }

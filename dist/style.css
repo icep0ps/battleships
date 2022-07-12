@@ -24,7 +24,9 @@ main {
 .mark {
   border: 3px solid blue;
 }
-
+.big {
+  background-color: red;
+}
 .hover {
   border: 3px solid blue;
   opacity: 0.5;
