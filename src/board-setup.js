@@ -1,11 +1,13 @@
-import { playerOne } from './game-loop';
+import { gameFlowControllers } from './game-loop';
+import { gameboard } from './gameboard-factory';
+const MAX_BOARD_LENGTH = 10;
 
 const BoardSetup = (() => {
-  function createBoards() {
+  const createBoards = () => {
     const boards = document.querySelectorAll('.player');
     const render = (board) => {
-      for (let y = 0; y < 10; y++) {
-        for (let x = 0; x < 10; x++) {
+      for (let y = 0; y < MAX_BOARD_LENGTH; y++) {
+        for (let x = 0; x < MAX_BOARD_LENGTH; x++) {
           const coordinate = document.createElement('div');
           coordinate.setAttribute('data-coordinate', [x, y]);
           board.appendChild(coordinate);
@@ -13,53 +15,65 @@ const BoardSetup = (() => {
       }
     };
     boards.forEach((board) => render(board));
-  }
+  };
   createBoards();
 
-  function createPlayerBoard() {
+  const createPlayerBoard = () => {
     let shipLoactions = [];
-    playerOne.board.shipCoordinates.forEach((coordinate) => {
-      const target = document.querySelectorAll(`[data-coordinate]`);
-      coordinate.location.forEach((location) => {
-        for (const coordinate of target) {
-          coordinate.getAttribute('data-coordinate') == location.substring(0, 3)
-            ? shipLoactions.push(coordinate)
-            : false;
-        }
-      });
-      shipLoactions.forEach((location) => {
-        location.setAttribute('class', 'mark');
-      });
-    });
-  }
+    gameFlowControllers.playerOne.board.shipCoordinates.forEach(
+      (coordinate) => {
+        const target = document.querySelectorAll(`[data-coordinate]`);
+        coordinate.location.forEach((location) => {
+          for (const coordinate of target) {
+            coordinate.getAttribute('data-coordinate') ==
+            location.substring(0, 3)
+              ? shipLoactions.push(coordinate)
+              : false;
+          }
+        });
+        shipLoactions.forEach((location) => {
+          location.setAttribute('class', 'mark');
+        });
+      }
+    );
+  };
 
   const ships = [5, 4, 3, 3, 1];
   const coordinates = document.querySelectorAll(`[data-coordinate]`);
-  const placeShip = (e) => {
+  const isvalidPlacement = (e) => {
     if (ships.length > 0) {
-      const currentShipLength = ships.shift();
+      const currentShipLength = ships[0];
       const coordinate = e.target.getAttribute('data-coordinate');
       const y = +coordinate[0];
       const x = +coordinate[2];
-      const total = y + currentShipLength;
-      if (total <= 10) {
-        playerOne.board.placeShip(y, x, currentShipLength);
+      let TOTAL = 0;
+      mouseEvents.getisHorizontal()
+        ? (TOTAL = y + currentShipLength)
+        : (TOTAL = x + currentShipLength);
+
+      if (TOTAL <= MAX_BOARD_LENGTH) {
+        gameFlowControllers.playerOne.board.placeShip(y, x, currentShipLength);
         createPlayerBoard();
+        ships.shift();
       }
     }
   };
+
   coordinates.forEach((coordinate) => {
-    coordinate.addEventListener('click', placeShip, { once: true });
+    coordinate.addEventListener('click', isvalidPlacement, { once: true });
   });
 
   return { coordinates, ships };
 })();
 
 const mouseEvents = (() => {
-  let horizontal = true;
+  let isHorizontal = true;
   let validCoordinates = [];
+
+  const getisHorizontal = () => isHorizontal;
+
   const rotate = () => {
-    return horizontal ? (horizontal = false) : (horizontal = true);
+    return isHorizontal ? (isHorizontal = false) : (isHorizontal = true);
   };
 
   const highlight = (e) => {
@@ -68,20 +82,21 @@ const mouseEvents = (() => {
     const firstNumber = +selectedCoordinate[0];
     const secondNumber = +selectedCoordinate[2];
     let TOTAL = firstNumber + BoardSetup.ships.length;
-    horizontal
+    isHorizontal
       ? (TOTAL = firstNumber + BoardSetup.ships.length)
       : (TOTAL = secondNumber + BoardSetup.ships.length);
 
     const checkTotal = () => {
-      if (TOTAL <= 10) {
+      if (TOTAL <= MAX_BOARD_LENGTH) {
         for (
           let shipLength = 0;
           shipLength < BoardSetup.ships.length;
           shipLength++
         ) {
+          console.log(shipLength);
           let firstNumber = +selectedCoordinate[0];
           let secondNumber = +selectedCoordinate[2];
-          horizontal
+          isHorizontal
             ? (firstNumber += shipLength)
             : (secondNumber += shipLength);
           const coordinate = document.querySelector(
@@ -111,6 +126,8 @@ const mouseEvents = (() => {
 
   const rotateBtn = document.getElementById('rotate');
   rotateBtn.addEventListener('click', rotate);
+
+  return { rotate, getisHorizontal };
 })();
 
-export { BoardSetup, mouseEvents };
+export { mouseEvents };

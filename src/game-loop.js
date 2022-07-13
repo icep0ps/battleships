@@ -1,95 +1,120 @@
 import { player, computer } from './players-factory';
 
-const tempPlayers = [];
-export const playerOne = player('jeff');
-const AI = computer('ai');
-// AI.board.placeShip(3, 4, 5);
-// AI.board.placeShip(8, 6, 2);
-// AI.board.placeShip(1, 7, 3);
-// AI.board.placeShip(5, 5, 3);
-// AI.board.placeShip(1, 2, 1);
-tempPlayers.push(playerOne);
+const gameFlowControllers = (() => {
+  const playerOne = player('jeff');
+  const AI = computer('ai');
 
-const attacking = (() => {
+  let allPlayers = [];
   let currentPlayer = playerOne;
   let currentEnemy = AI;
-  const switchTurns = () => {
-    if (currentPlayer == playerOne) {
-      currentPlayer = AI;
-      currentEnemy = playerOne;
-    } else {
-      currentPlayer = playerOne;
-      currentEnemy = AI;
-    }
-  };
+  allPlayers.push(playerOne);
 
   const gameOver = () => {
     currentEnemy.board.allShipsSunk() ? (endgame = true) : false;
   };
 
-  const playerAttack = (e) => {
-    const coordianate = e.target.getAttribute('data-coordinate');
-    if (currentPlayer.attack(coordianate, currentEnemy.board)) {
-      e.target.setAttribute('class', 'hit');
-    } else {
-      e.target.setAttribute('class', 'miss');
+  const switchTurns = () => {
+    if (currentPlayer == playerOne) {
+      currentPlayer = AI;
+      currentEnemy = playerOne;
+      return;
+    }
+
+    if (currentPlayer == AI) {
+      currentPlayer = playerOne;
+      currentEnemy = AI;
+      return;
     }
   };
 
+  return {
+    gameOver,
+    switchTurns,
+    currentPlayer,
+    currentEnemy,
+    allPlayers,
+    playerOne,
+  };
+})();
+
+const PlayersAttacks = (() => {
+  const AI_ATTACK_DELAY = 200;
+  const IF_CURRENT_PLAYER_ATTACKED = (coordianate) => {
+    return gameFlowControllers.currentPlayer.attack(
+      coordianate,
+      gameFlowControllers.currentEnemy.board
+    );
+  };
+
+  const playerAttack = (e) => {
+    const coordianate = e.target.getAttribute('data-coordinate');
+    IF_CURRENT_PLAYER_ATTACKED(coordianate)
+      ? e.target.setAttribute('class', 'hit')
+      : e.target.setAttribute('class', 'miss');
+  };
+
   const enemyAttack = () => {
-    const coordianate = AI.genarateCoordinates();
-    const target = document.querySelector('#jeff');
-    const box = target.querySelector(`[data-coordinate="${coordianate}"]`);
-    console.log(coordianate);
-    if (currentPlayer.attack(coordianate, currentEnemy.board)) {
-      box.setAttribute('class', 'hit');
-    } else {
-      box.setAttribute('class', 'miss');
-    }
-    switchTurns();
+    const coordianates = AI.genarateCoordinates();
+    const enemy = document.querySelector('#jeff');
+    const coordianate = enemy.querySelector(
+      `[data-coordinate="${coordianates}"]`
+    );
+
+    IF_CURRENT_PLAYER_ATTACKED(coordianates)
+      ? coordianate.setAttribute('class', 'hit')
+      : coordianate.setAttribute('class', 'miss');
+
+    gameFlowControllers.switchTurns();
   };
 
   function attack(e) {
     playerAttack(e);
-    switchTurns();
-    setTimeout(enemyAttack, 200);
+    gameFlowControllers.switchTurns();
+    setTimeout(enemyAttack, AI_ATTACK_DELAY);
   }
 
-  return { attack, switchTurns, currentPlayer };
+  return { attack };
 })();
 
 const renderBoards = (() => {
-  function createPlayerOneBoard() {
-    tempPlayers.forEach((dude) => {
-      console.log(dude);
-      const players = document.querySelector(`#${dude.name}`);
-      dude.board.shipCoordinates.forEach((coordinate) => {
-        const target = players.querySelectorAll(`[data-coordinate]`);
-        if (dude.name == 'ai') {
-          Array.from(target).forEach((coordinate) => {
-            coordinate.addEventListener('click', attacking.attack, {
-              once: true,
-            });
-          });
-        }
-        let final = [];
-        coordinate.location.forEach((locate) => {
-          const test = Array.from(target);
-          for (const coord of test) {
-            if (
-              coord.getAttribute('data-coordinate') == locate.substring(0, 3)
-            ) {
-              final.push(coord);
-            }
-          }
-        });
+  const addMarksToValidCoordiantes = (locations, Boardcoordinates) => {
+    locations.forEach((location) => {
+      for (const coordinate of Boardcoordinates) {
+        const currentCoordinate = coordinate.getAttribute('data-coordinate');
+        currentCoordinate == location.substring(0, 3)
+          ? coordinate.setAttribute('class', 'mark')
+          : false;
+      }
+    });
+  };
 
-        final.forEach((item) => {
-          item.setAttribute('class', 'mark');
-        });
+  function UpdateAllPlayersBoards() {
+    gameFlowControllers.allPlayers.forEach((player) => {
+      const players = document.querySelector(`#${player.name}`);
+      const Boardcoordinates = players.querySelectorAll(`[data-coordinate]`);
+      player.board.shipCoordinates.forEach((shipDetail) => {
+        addMarksToValidCoordiantes(shipDetail.location, Boardcoordinates);
       });
     });
   }
 
-  return {};
+  const addEnemyEventListeners = () => {
+    const AI_BOARD = document.getElementById('ai');
+    const coordianates = AI_BOARD.querySelectorAll(`[data-coordinate]`);
+    coordianates.forEach((coordinate) => {
+      coordinate.addEventListener('click', PlayersAttacks.attack, {
+        once: true,
+      });
+    });
+  };
+  // UpdateAllPlayersBoards();
+  // addEnemyEventListeners();
 })();
+
+export { gameFlowControllers };
+
+// AI.board.placeShip(3, 4, 5);
+// AI.board.placeShip(8, 6, 2);
+// AI.board.placeShip(1, 7, 3);
+// AI.board.placeShip(5, 5, 3);
+// AI.board.placeShip(1, 2, 1);
