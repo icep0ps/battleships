@@ -7,6 +7,10 @@ const gameFlowControllers = (() => {
   let allPlayers = [];
   let currentPlayer = playerOne;
   let currentEnemy = AI;
+
+  const getCurrentPlayer = () => currentPlayer;
+  const getCurrentEnemy = () => currentEnemy;
+
   allPlayers.push(playerOne);
 
   const gameOver = () => {
@@ -30,20 +34,20 @@ const gameFlowControllers = (() => {
   return {
     gameOver,
     switchTurns,
-    currentPlayer,
-    currentEnemy,
+    getCurrentPlayer,
+    getCurrentEnemy,
     allPlayers,
     playerOne,
+    AI,
   };
 })();
 
 const PlayersAttacks = (() => {
   const AI_ATTACK_DELAY = 200;
   const IF_CURRENT_PLAYER_ATTACKED = (coordianate) => {
-    return gameFlowControllers.currentPlayer.attack(
-      coordianate,
-      gameFlowControllers.currentEnemy.board
-    );
+    return gameFlowControllers
+      .getCurrentPlayer()
+      .attack(coordianate, gameFlowControllers.getCurrentEnemy().board);
   };
 
   const playerAttack = (e) => {
@@ -54,7 +58,7 @@ const PlayersAttacks = (() => {
   };
 
   const enemyAttack = () => {
-    const coordianates = AI.genarateCoordinates();
+    const coordianates = gameFlowControllers.AI.genarateCoordinates();
     const enemy = document.querySelector('#jeff');
     const coordianate = enemy.querySelector(
       `[data-coordinate="${coordianates}"]`
@@ -107,14 +111,8 @@ const renderBoards = (() => {
       });
     });
   };
-  // UpdateAllPlayersBoards();
-  // addEnemyEventListeners();
+
+  return { UpdateAllPlayersBoards, addEnemyEventListeners };
 })();
 
-export { gameFlowControllers };
-
-// AI.board.placeShip(3, 4, 5);
-// AI.board.placeShip(8, 6, 2);
-// AI.board.placeShip(1, 7, 3);
-// AI.board.placeShip(5, 5, 3);
-// AI.board.placeShip(1, 2, 1);
+export { gameFlowControllers, renderBoards };

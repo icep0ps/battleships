@@ -1,15 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500&display=swap');
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Chakra Petch', sans-serif;
 }
 
 .player {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
+  border: rgb(0, 0, 0) solid 2px;
   width: 350px;
   height: 350px;
-  border: rgb(0, 0, 0) solid 2px;
 }
 [data-coordinate] {
   outline: 1px solid black;
@@ -21,8 +21,21 @@ main {
   padding-top: 30px;
 }
 
+button {
+  font-family: inherit;
+  font-size: 1.3rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 15px;
+  margin: 30px;
+  width: 300px;
+  height: 70px;
+  cursor: pointer;
+  margin-bottom: 0px;
+}
+
 .mark {
-  border: 3px solid blue;
+  background-color: greenyellow;
 }
 .big {
   background-color: red;
@@ -50,4 +63,8 @@ nav > ul {
 }
 h1 {
   display: block;
+}
+
+#hidden {
+  display: none;
 }

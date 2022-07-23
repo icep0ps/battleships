@@ -17,7 +17,7 @@ const gameboard = () => {
     ) {
       let firstCoordinate = COORDINATE_ONE;
       let secondCoordinate = COORDINATE_TWO;
-      console.log('clicked');
+
       mouseEvents.getisHorizontal()
         ? (firstCoordinate += currentPosition)
         : (secondCoordinate += currentPosition);
