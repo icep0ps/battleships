@@ -68,3 +68,8 @@ h1 {
 #hidden {
   display: none;
 }
+
+#buttons {
+  display: flex;
+  flex-direction: column;
+}

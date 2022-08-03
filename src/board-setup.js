@@ -35,6 +35,7 @@ const BoardSetup = (() => {
         });
         shipLoactions.forEach((location) => {
           location.setAttribute('class', 'mark');
+          location.removeEventListener('click', isvalidPlacement);
         });
       }
     );
@@ -54,7 +55,7 @@ const BoardSetup = (() => {
         ? (TOTAL = y + currentShipLength)
         : (TOTAL = x + currentShipLength);
 
-      if (TOTAL <= MAX_BOARD_LENGTH) {
+      if (TOTAL <= MAX_BOARD_LENGTH && !isColliding()) {
         gameFlowControllers.playerOne.board.placeShip(y, x, currentShipLength);
         createPlayerBoard();
         SHIP_LENGTHS.shift();
@@ -62,11 +63,35 @@ const BoardSetup = (() => {
     }
   };
 
+  const isColliding = () => {
+    let colliding = false;
+    const hovers = document.querySelectorAll('.hover');
+    const allShipLocations =
+      gameFlowControllers.playerOne.board.shipCoordinates.map(
+        (ship) => ship.location
+      );
+    const finalInvalidCoordinates = [];
+    allShipLocations.forEach((locations) => {
+      return locations.map((location) => {
+        finalInvalidCoordinates.push(location.substring(0, 3));
+      });
+    });
+    hovers.forEach((coordinate) => {
+      finalInvalidCoordinates.includes(
+        coordinate.getAttribute('data-coordinate')
+      )
+        ? (colliding = true)
+        : false;
+    });
+
+    return colliding;
+  };
+
   coordinates.forEach((coordinate) => {
     coordinate.addEventListener('click', isvalidPlacement, { once: true });
   });
 
-  return { coordinates, SHIP_LENGTHS };
+  return { coordinates, SHIP_LENGTHS, isColliding };
 })();
 
 const startBattle = (() => {
@@ -119,12 +144,12 @@ const mouseEvents = (() => {
         const coordinate = document.querySelector(
           `[data-coordinate="${firstNumber},${secondNumber}"]`
         );
+
         coordinate.classList.add('hover');
         validCoordinates.push(coordinate);
       }
       return;
     }
-
     return (event.target.style.cursor = 'not-allowed');
   };
 
@@ -141,7 +166,7 @@ const mouseEvents = (() => {
     checkTotal(TOTAL, selectedCoordinate, CURRENT_LENGTH, event);
   };
 
-  const removeHighlight = () => {
+  const removeHighlight = (event) => {
     validCoordinates.forEach((coordinate) => {
       coordinate.classList.remove('hover');
     });

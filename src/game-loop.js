@@ -13,9 +13,7 @@ const gameFlowControllers = (() => {
 
   allPlayers.push(playerOne);
 
-  const gameOver = () => {
-    currentEnemy.board.allShipsSunk() ? (endgame = true) : false;
-  };
+  const gameOver = () => (currentEnemy.board.allShipsSunk() ? true : false);
 
   const switchTurns = () => {
     if (currentPlayer == playerOne) {
@@ -32,13 +30,14 @@ const gameFlowControllers = (() => {
   };
 
   return {
+    AI,
+    playerOne,
+    allPlayers,
+
     gameOver,
     switchTurns,
     getCurrentPlayer,
     getCurrentEnemy,
-    allPlayers,
-    playerOne,
-    AI,
   };
 })();
 
@@ -72,9 +71,13 @@ const PlayersAttacks = (() => {
   };
 
   function attack(e) {
-    playerAttack(e);
-    gameFlowControllers.switchTurns();
-    setTimeout(enemyAttack, AI_ATTACK_DELAY);
+    if (gameFlowControllers.gameOver()) {
+      console.log('gameover');
+    } else {
+      playerAttack(e);
+      gameFlowControllers.switchTurns();
+      setTimeout(enemyAttack, AI_ATTACK_DELAY);
+    }
   }
 
   return { attack };
