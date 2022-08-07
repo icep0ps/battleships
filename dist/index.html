@@ -5,28 +5,49 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="/dist/main.js" defer></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
+    />
     <link rel="stylesheet" href="/dist/style.css" />
     <title>Battleships</title>
   </head>
   <body>
     <header>
-      <h1>Battleships</h1>
-      <nav>
-        <ul>
-          <li>How to play</li>
-          <li>About project</li>
-          <li>My Github</li>
-        </ul>
-      </nav>
+      <h1>
+        Battleships
+        <span class="material-symbols-outlined"> swords </span>
+      </h1>
+      <p>
+        <strong>Game Rules:</strong> Each ship must be placed horizontally or
+        vertically across grid spaces not diagonally and the ships can't hang
+        off the grid. Ships can touch each other, but they can't occupy the same
+        grid space. You cannot change the position of the ships after the game
+        begins
+      </p>
     </header>
     <main>
       <div>
-        <h2>Place your Ship</h2>
         <h1>Your board</h1>
         <div class="player one" id="jeff"></div>
-        <div id="buttons">
-          <button id="rotate">Rotate</button>
-          <button id="start">Start Game</button>
+      </div>
+      <div class="options">
+        <div class="infomation">
+          <h2>Place Your Battleships</h2>
+          <p>Click a coordinate to place your Bomber</p>
+
+          <div class="ship">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <div id="buttons">
+            <button id="rotate">Rotate</button>
+            <button id="start">Start</button>
+          </div>
         </div>
       </div>
 
@@ -35,5 +56,6 @@
         <div class="player two" id="ai"></div>
       </div>
     </main>
+    <footer>Made by <a href="https://github.com/icep0ps"> Icep0ps </a></footer>
   </body>
 </html>

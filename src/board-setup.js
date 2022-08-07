@@ -154,7 +154,7 @@ const mouseEvents = (() => {
   };
 
   const highlight = (event) => {
-    event.target.style.cursor = 'move';
+    event.target.style.cursor = 'crosshair';
     const CURRENT_LENGTH = BoardSetup.SHIP_LENGTHS[0];
     const selectedCoordinate = event.target.getAttribute('data-coordinate');
     const firstNumber = +selectedCoordinate[0];
