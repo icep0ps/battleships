@@ -59,6 +59,11 @@ const BoardSetup = (() => {
         gameFlowControllers.playerOne.board.placeShip(y, x, currentShipLength);
         createPlayerBoard();
         SHIP_LENGTHS.shift();
+        if (BoardSetup.SHIP_LENGTHS.length === 0) {
+          const start = document.getElementById('start');
+          start.addEventListener('click', startBattle.start);
+          start.setAttribute('class', 'ready');
+        }
       }
     }
   };
@@ -98,18 +103,17 @@ const startBattle = (() => {
   const clearSetup = () => {
     const buttons = document.querySelectorAll('button');
     const computer = document.getElementById('hidden');
+    const infomation = document.querySelector('.options');
+
     buttons.forEach((button) => {
       button.remove();
     });
     computer.style.display = 'block';
+    infomation.remove();
   };
 
   const computerMoves = () => {
-    gameFlowControllers.AI.board.placeShip(3, 4, 5);
-    gameFlowControllers.AI.board.placeShip(8, 6, 2);
-    gameFlowControllers.AI.board.placeShip(1, 7, 3);
-    gameFlowControllers.AI.board.placeShip(5, 5, 3);
-    gameFlowControllers.AI.board.placeShip(1, 2, 1);
+    gameFlowControllers.AI.randomize();
   };
 
   const start = () => {
@@ -179,9 +183,6 @@ const mouseEvents = (() => {
 
   const rotateBtn = document.getElementById('rotate');
   rotateBtn.addEventListener('click', rotate);
-
-  const start = document.getElementById('start');
-  start.addEventListener('click', startBattle.start);
 
   return { rotate, getisHorizontal };
 })();

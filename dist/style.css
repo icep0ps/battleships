@@ -112,9 +112,13 @@ h1 {
 }
 
 .hit {
+  border: 10px solid white;
+  transition: ease-in 0.2s;
   background-color: red;
 }
 .miss {
+  border: 10px solid white;
+  transition: ease-in 0.2s;
   background-color: blue;
 }
 
@@ -130,7 +134,7 @@ h1 {
   outline: 1px solid black;
 }
 
-#start:hover {
+.ready {
   color: black;
   box-shadow: inset 400px 0 0 0 white;
 }

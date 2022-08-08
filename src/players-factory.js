@@ -49,16 +49,11 @@ const computer = (user) => {
     enemyBoard.receiveAttack(coordinates);
 
   const randomize = () => {
-    for (let i = 5; i > 0; i--) {
+    const SHIP_LENGTHS = [5, 4, 3, 3, 2, 2];
+    for (let i = 0; i < SHIP_LENGTHS.length; i++) {
       let coordinate1 = Math.floor(Math.random() * 10);
       let coordinate2 = Math.floor(Math.random() * 10);
-      if (i == 3) {
-        for (let x = 0; x < 2; x++) {
-          board.placeShip(coordinate1, coordinate2, 3);
-        }
-      } else {
-        board.placeShip(coordinate1, coordinate2, i);
-      }
+      board.placeShip(coordinate1, coordinate2, SHIP_LENGTHS.pop());
     }
   };
   return { board, attack, genarateCoordinates, randomize, name };
