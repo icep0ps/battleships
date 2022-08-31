@@ -114,6 +114,7 @@ const startBattle = (() => {
 
   const computerMoves = () => {
     gameFlowControllers.AI.randomize();
+    console.log('ran');
   };
 
   const start = () => {

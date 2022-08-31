@@ -57,7 +57,7 @@ const PlayersAttacks = (() => {
   };
 
   const enemyAttack = () => {
-    const coordianates = gameFlowControllers.AI.genarateCoordinates();
+    const coordianates = gameFlowControllers.AI.genarateAttackCoordinates();
     const enemy = document.querySelector('#jeff');
     const coordianate = enemy.querySelector(
       `[data-coordinate="${coordianates}"]`

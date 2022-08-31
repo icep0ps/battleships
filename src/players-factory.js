@@ -1,7 +1,7 @@
 import { gameboard } from './gameboard-factory';
 
-const player = (arg) => {
-  const name = arg;
+const player = (username) => {
+  const name = username;
   const board = gameboard();
   const attack = (coordinates, enemyBoard) => {
     return enemyBoard.receiveAttack(coordinates);
@@ -24,29 +24,31 @@ const player = (arg) => {
   return { board, attack, randomize, name };
 };
 
-const computer = (user) => {
+const computer = (username) => {
+  const name = username;
   const board = gameboard();
-  const name = user;
-  const genarateCoordinates = () => {
-    let arr = '';
-    while (arr.length < 2) {
-      let r = Math.floor(Math.random() * 10);
-      arr += r;
-    }
-    return verify(arr);
-  };
   const coordinatesUsed = [];
-  const verify = (arr) => {
-    if (coordinatesUsed.includes(arr)) {
-      return genarateCoordinates();
-    } else {
-      coordinatesUsed.push(arr);
-      console.log(`${arr[0]},${arr[1]}`);
-      return arr[0] + ',' + arr[1];
-    }
-  };
+
   const attack = (coordinates, enemyBoard) =>
     enemyBoard.receiveAttack(coordinates);
+
+  const genarateAttackCoordinates = () => {
+    let coordinates = '';
+    while (coordinates.length < 2) {
+      let coordinate = Math.floor(Math.random() * 10);
+      coordinates += coordinate;
+    }
+    return verifyCoordinates(coordinates);
+  };
+
+  const verifyCoordinates = (coordinates) => {
+    if (coordinatesUsed.includes(coordinates)) {
+      return genarateAttackCoordinates();
+    } else {
+      coordinatesUsed.push(coordinates);
+      return `${coordinates[0]},${coordinates[1]}`;
+    }
+  };
 
   const randomize = () => {
     const SHIP_LENGTHS = [5, 4, 3, 3, 2, 2];
@@ -56,7 +58,7 @@ const computer = (user) => {
       board.placeShip(coordinate1, coordinate2, SHIP_LENGTHS.pop());
     }
   };
-  return { board, attack, genarateCoordinates, randomize, name };
+  return { board, attack, genarateAttackCoordinates, randomize, name };
 };
 
 export { player, computer };

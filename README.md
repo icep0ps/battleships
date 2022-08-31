@@ -20,8 +20,6 @@ From my understanding this is when we write our tests first before writing our c
 
 I also learned that when unit testing a query message(this is a value that doesnt produce any side effects (think of it as a pure function)) we want to test the interface not the implemantation(how we got our result). If we can test the interface it means we can change the implemantation without breaking the test and thats the goal!
 
-When testing command messages(a function that will produce a side effect within the program e.g changing a dom element)
-
 Finally i learnt about pure funtions which are funtion that produce the same result when passed the same arguements. It doesnt reply on any data or state during exacution it only depends on the input arguments and they do not produce any observable Side Effects(any interaction with the outside world from within a function. That could be anything from changing a variable that exists outside the function, to calling another method from within a function.). So why are pure funtions necessary when it comes to writing tests? Well they are immediately testable. They will always produce the same result if you pass in the same arguments as mentioned before. They also makes maintaining and refactoring code much easier. You can change a pure function and not have to worry about unintended side effects messing up the entire application and ending up in debugging hell.
 
 I am yet to fully understand the concept of mocking and creating mock funtions though.
