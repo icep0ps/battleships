@@ -4,7 +4,6 @@ const ship = (length) => {
   const hit = (postion) => {
     if (!shipHits.includes(postion) && postion <= shipLength) {
       shipHits.push(postion);
-      console.log(shipHits);
     }
   };
 

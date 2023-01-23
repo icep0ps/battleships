@@ -63,6 +63,8 @@ const checkout = () => {
 };
 ```
 
+Also found out that classList selector has terrible performance issues
+
 # Acknowledgements
 
 [The Odin Project](https://www.theodinproject.com)

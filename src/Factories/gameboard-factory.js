@@ -1,4 +1,4 @@
-import { mouseEvents } from './board-setup';
+import { mouseEvents } from '../MouseEvents';
 import { ship as BattleShip } from './ships-factory';
 
 const gameboard = () => {
@@ -32,11 +32,12 @@ const gameboard = () => {
 
   const receiveAttack = (coordinates) => {
     return shipCoordinates.some((coordinate) => {
-      coordinate.location.forEach((location) => {
+      for (let location of coordinate.location) {
         location.substring(0, 3) == coordinates
           ? coordinate.ship.hit(location.substring(4))
           : missedAttacks.push(coordinates);
-      });
+      }
+
       return coordinate.location.some(
         (coordinate) => coordinate.substring(0, 3) == coordinates
       );
