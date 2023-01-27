@@ -18,16 +18,16 @@ const gameFlowControllers = (() => {
 
   allPlayers.push(playerOne);
 
-  const gameOver = () => currentEnemy.board.allShipsSunk() && true;
+  const gameOver = () => currentPlayer.board.allShipsSunk();
 
   const switchTurns = () => {
-    if (currentPlayer == playerOne) {
+    if (currentPlayer === playerOne) {
       currentPlayer = AI;
       currentEnemy = playerOne;
       return;
     }
 
-    if (currentPlayer == AI) {
+    if (currentPlayer === AI) {
       currentPlayer = playerOne;
       currentEnemy = AI;
       return;
@@ -54,36 +54,36 @@ const PlayersAttacks = (() => {
       .attack(coordianate, gameFlowControllers.getCurrentEnemy().board);
   };
 
-  const playerAttack = (e) => {
-    const coordianate = e.target.getAttribute('data-coordinate');
-    IF_CURRENT_PLAYER_ATTACKED(coordianate)
-      ? e.target.setAttribute('class', 'hit')
-      : e.target.setAttribute('class', 'miss');
-  };
-
-  const enemyAttack = () => {
-    const coordianates = gameFlowControllers.AI.genarateAttackCoordinates();
-    const enemy = document.querySelector(
-      `${gameFlowControllers.playerOne.name}`
-    );
-    const coordianate = enemy.querySelector(
-      `[data-coordinate="${coordianates}"]`
-    );
-
-    IF_CURRENT_PLAYER_ATTACKED(coordianates)
-      ? coordianate.setAttribute('class', 'hit')
-      : coordianate.setAttribute('class', 'miss');
-
-    gameFlowControllers.switchTurns();
-  };
-
-  const attack = (e) => {
+  const playerAttack = (usersAttack) => {
     if (gameFlowControllers.gameOver()) {
-      return;
+      return console.log(
+        `Gameover ${gameFlowControllers.getCurrentEnemy().name} wins`
+      );
     }
-    playerAttack(e);
+    if (usersAttack) {
+      const coordianate = usersAttack.target.getAttribute('data-coordinate');
+      IF_CURRENT_PLAYER_ATTACKED(coordianate)
+        ? usersAttack.target.setAttribute('class', 'hit')
+        : usersAttack.target.setAttribute('class', 'miss');
+    } else {
+      const coordianates = gameFlowControllers.AI.genarateAttackCoordinates();
+      const enemy = document.querySelector(
+        `#${gameFlowControllers.playerOne.name}`
+      );
+      const coordianate = enemy.querySelector(
+        `[data-coordinate="${coordianates}"]`
+      );
+      IF_CURRENT_PLAYER_ATTACKED(coordianates)
+        ? coordianate.setAttribute('class', 'hit')
+        : coordianate.setAttribute('class', 'miss');
+    }
     gameFlowControllers.switchTurns();
-    setTimeout(enemyAttack, AI_ATTACK_DELAY);
+    return;
+  };
+
+  const attack = (event) => {
+    playerAttack(event);
+    playerAttack(null);
   };
 
   return { attack };
@@ -102,7 +102,6 @@ const renderBoards = (() => {
 
   const UpdateAllPlayersBoards = () => {
     for (let player of gameFlowControllers.allPlayers) {
-      console.log(player);
       const players = document.querySelector(`#${player.name}`);
       const Boardcoordinates = players.querySelectorAll(`[data-coordinate]`);
       for (let shipDetail of player.board.shipCoordinates) {
