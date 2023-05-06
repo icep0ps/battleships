@@ -23,7 +23,6 @@ const BoardSetup = (() => {
   })();
 
   const displayShipCoordinates = () => {
-    console.log('displaying');
     const shipLoactions = [];
     const target = yourBoard.querySelectorAll('[data-coordinate]');
     for (let coordinate of gameFlowControllers.playerOne.board
@@ -58,7 +57,6 @@ const BoardSetup = (() => {
       } else {
         TOTAL_SPACE_OCCUPIED = coordinateX + currentShipLength;
       }
-      console.log('collide :', isCollidingWithOtherShip());
       if (
         TOTAL_SPACE_OCCUPIED <= MAX_BOARD_LENGTH &&
         !isCollidingWithOtherShip()
@@ -70,7 +68,12 @@ const BoardSetup = (() => {
         );
         displayShipCoordinates();
         SHIP_LENGTHS.shift();
+        displayNextShipToPlace(SHIP_LENGTHS[0]);
         if (BoardSetup.SHIP_LENGTHS.length === 0) {
+          const panel = document.querySelector('.ship');
+          const Readytext = document.createElement('p');
+          Readytext.innerText = 'Ready for battle!';
+          panel.appendChild(Readytext);
           const start = document.getElementById('start');
           start.addEventListener('click', startBattle.start);
           start.setAttribute('class', 'ready');
@@ -133,6 +136,18 @@ const BoardSetup = (() => {
     coordinate.addEventListener('mouseover', highlight);
     coordinate.addEventListener('mouseout', removeHighlight);
   }
+
+  const displayNextShipToPlace = (shipLength) => {
+    const panel = document.querySelector('.ship');
+
+    while (panel.firstChild) {
+      panel.removeChild(panel.firstChild);
+    }
+    for (let i = 1; i <= shipLength; i++) {
+      const span = document.createElement('span');
+      panel.appendChild(span);
+    }
+  };
 
   return { coordinates, SHIP_LENGTHS, isCollidingWithOtherShip };
 })();
