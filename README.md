@@ -16,17 +16,17 @@ Live Preview : [Play BattleShips](icep0ps.github.io/calculator/)
 
 # Lessons Learned
 
-From my understanding this is when we write our tests first before writing our code. Some reasons on why we do this are that we can keep away from alot of debugging thus speeds up development , it improves our design, encourages refactoring and it builds a safety net to defend against other programmers. There are tests runners that we can use such as Mocha, Jasmine, Tape and Jest.
+From my understanding, this is when we write our tests first before writing our code. Some reasons why we do this are that it helps us avoid a lot of debugging, thus speeding up development. It also improves our design, encourages refactoring, and builds a safety net to defend against other programmers. There are test runners that we can use, such as Mocha, Jasmine, Tape, and Jest.
 
-I also learned that when unit testing a query message(this is a value that doesnt produce any side effects (think of it as a pure function)) we want to test the interface not the implemantation(how we got our result). If we can test the interface it means we can change the implemantation without breaking the test and thats the goal!
+I also learned that when unit testing a query message (this is a value that doesn't produce any side effects, think of it as a pure function), we want to test the interface, not the implementation (how we got our result). If we can test the interface, it means we can change the implementation without breaking the test, and that's the goal!
 
-Finally i learnt about pure funtions which are funtion that produce the same result when passed the same arguements. It doesnt reply on any data or state during exacution it only depends on the input arguments and they do not produce any observable Side Effects(any interaction with the outside world from within a function. That could be anything from changing a variable that exists outside the function, to calling another method from within a function.). So why are pure funtions necessary when it comes to writing tests? Well they are immediately testable. They will always produce the same result if you pass in the same arguments as mentioned before. They also makes maintaining and refactoring code much easier. You can change a pure function and not have to worry about unintended side effects messing up the entire application and ending up in debugging hell.
+Finally, I learned about pure functions, which are functions that produce the same result when passed the same arguments. They don't rely on any data or state during execution; they only depend on the input arguments and do not produce any observable side effects (any interaction with the outside world from within a function, such as changing a variable that exists outside the function or calling another method from within a function). So why are pure functions necessary when it comes to writing tests? Well, they are immediately testable. They will always produce the same result if you pass in the same arguments, as mentioned before. They also make maintaining and refactoring code much easier. You can change a pure function and not have to worry about unintended side effects messing up the entire application and ending up in debugging hell.
 
-I am yet to fully understand the concept of mocking and creating mock funtions though.
+I am yet to fully understand the concept of mocking and creating mock functions, though.
 
 **Problem**
 
-If you try to acess a variable that has been modified in another module from another anywhere else other than the module itself it will return the initial value. In the example below the checkout function will always return false becasue `purchaseConfirmed` is a primitive. You can't change it's value assigned to it in the other module when it's a primitive, you can only change the value `purchaseConfirmed` has been assigned in scope of the current module.
+If you try to access a variable that has been modified in another module from anywhere else other than the module itself, it will return the initial value. In the example below, the `checkout` function will always return false because `purchaseConfirmed` is a primitive. You can't change its value assigned to it in the other module when it's a primitive; you can only change the value `purchaseConfirmed` has been assigned in the scope of the current module.
 
 ```js
 const purchases = (() => {
