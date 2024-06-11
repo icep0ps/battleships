@@ -4,68 +4,54 @@ import Game from './Game';
 
 export default class DisplayController {
   render = {
-    ships() {},
-    gameboard() {},
+    ship(coordiantes: string[]) {
+      coordiantes.forEach((coordiante) => {
+        const grid = document.querySelector(
+          `[data-coordinates="${coordiante[0]},${coordiante[2]}"]`
+        );
+        if (grid) grid.classList.add('ship');
+      });
+    },
+    gameboards() {
+      const playerboard = DisplayController.create.board(
+        'player',
+        Game.players.player.board
+      );
+      const enemyboard = DisplayController.create.board(
+        'enemy',
+        Game.players.enemy.board
+      );
+    },
     setupboard() {
       const setupboard = DisplayController.create.board(
         'setup',
         Game.players.player.board
       );
-      DisplayController.add.event.highlight(setupboard);
-      DisplayController.add.event.place(setupboard);
+
+      return setupboard;
     },
   };
 
-  static add = {
-    event: {
-      highlight(board: HTMLDivElement) {
-        const player = Game.players.player;
+  highlight = {
+    add(event: MouseEvent) {
+      if (Game.players.player.board.allShipsArePlaced()) return;
 
-        const grids = board.querySelectorAll('.grid');
-        const HIGHLIGHT_CLASSNAME = 'highlight';
+      const grid = event.currentTarget as HTMLDivElement;
+      DisplayController.getShipGrids(
+        grid,
+        Game.players.player.board.ships[Game.players.player.board.placedships]
+      ).forEach((grid) => grid.classList.add('highlight'));
+    },
 
-        grids.forEach((grid) => {
-          if (grid instanceof HTMLDivElement) {
-            grid.addEventListener('mouseenter', (event) => {
-              const grid = event.currentTarget as HTMLDivElement;
+    remove(event: MouseEvent) {
+      if (Game.players.player.board.allShipsArePlaced()) return;
 
-              DisplayController.getShipGrids(
-                grid,
-                player.board.ships[0]
-              ).forEach((grid) => grid.classList.add(HIGHLIGHT_CLASSNAME));
-            });
+      const grid = event.currentTarget as HTMLDivElement;
 
-            grid.addEventListener('mouseleave', () => {
-              DisplayController.getShipGrids(
-                grid,
-                player.board.ships[0]
-              ).forEach((grid) => grid.classList.remove(HIGHLIGHT_CLASSNAME));
-            });
-          }
-        });
-      },
-
-      place(board: HTMLDivElement) {
-        const grids = board.querySelectorAll('.grid');
-        const player = Game.players.player;
-
-        grids.forEach((grid) => {
-          if (grid instanceof HTMLDivElement)
-            grid.addEventListener('click', () => {
-              DisplayController.getShipGrids(
-                grid,
-                player.board.ships[0]
-              ).forEach((grid) => {
-                const coordinates = grid.dataset.coordinates;
-                if (coordinates) {
-                  player.board.ships[0].coordinates = coordinates;
-                  return grid.classList.add('ship');
-                }
-                throw new Error('Could not get coordinates');
-              });
-            });
-        });
-      },
+      DisplayController.getShipGrids(
+        grid,
+        Game.players.player.board.ships[Game.players.player.board.placedships]
+      ).forEach((grid) => grid.classList.remove('highlight'));
     },
   };
 

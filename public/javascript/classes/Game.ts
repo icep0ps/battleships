@@ -1,6 +1,5 @@
 import Player from './Player';
 import DisplayController from './Display';
-import { GameEvent, GameStatus, Playertype } from '../../../types';
 
 class Game {
   static players: {
@@ -16,21 +15,60 @@ class Game {
   };
 
   static initialize() {
-    Game.controllers.display.render.setupboard();
+    const board = Game.controllers.display.render.setupboard();
+    Game.events.highlight(board);
+    Game.events.placeShip(board);
   }
 
-  static notify({ event, player }: { event: GameEvent; player: Playertype }) {
-    switch (event) {
-      case 'BOARD_CREATION':
-        if (player === 'PLAYER') {
-          const player = Game.players.player;
-          if (player) Game.controllers.display.render.setupboard();
-          else throw Error('Could not find player');
+  static start() {
+    document.getElementById('setup')?.remove();
+    Game.controllers.display.render.gameboards();
+    Game.players.player.board.ships.forEach((ship) => {
+      Game.controllers.display.render.ship(ship.coordinates);
+    });
+  }
+
+  static events = {
+    highlight(board: HTMLDivElement) {
+      board.querySelectorAll('.grid').forEach((grid) => {
+        if (grid instanceof HTMLDivElement) {
+          grid.addEventListener(
+            'mouseenter',
+            Game.controllers.display.highlight.add
+          );
+
+          grid.addEventListener(
+            'mouseleave',
+            Game.controllers.display.highlight.remove
+          );
         }
+      });
+    },
 
-        break;
-    }
-  }
+    placeShip(board: HTMLDivElement) {
+      const player = Game.players.player;
+
+      board.querySelectorAll('.grid').forEach((grid) => {
+        if (grid instanceof HTMLDivElement)
+          grid.addEventListener('click', () => {
+            if (Game.players.player.board.allShipsArePlaced()) {
+              Game.start();
+              return;
+            }
+            const coordiantes: string[] = [];
+            DisplayController.getShipGrids(
+              grid,
+              player.board.ships[player.board.placedships]
+            ).forEach((grid) => {
+              const coordinate = grid.dataset.coordinates;
+              if (coordinate) coordiantes.push(coordinate);
+            });
+            player.board.placeShip(coordiantes);
+            Game.controllers.display.render.ship(coordiantes);
+          });
+      });
+    },
+  };
 }
 
 export default Game;
