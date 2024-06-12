@@ -1,13 +1,19 @@
 import Player from './Player';
+import Computer from './Enemy';
 import DisplayController from './Display';
 
 class Game {
   static players: {
     player: Player;
-    enemy: Player;
+    enemy: Computer;
   } = {
-    enemy: new Player('ENEMY'),
+    enemy: new Computer(),
     player: new Player('PLAYER'),
+  };
+
+  static state = {
+    currentPlayer: Game.players.player,
+    isGameOver: false,
   };
 
   static controllers = {
@@ -24,9 +30,24 @@ class Game {
     document.getElementById('setup')?.remove();
     Game.controllers.display.render.gameboards();
     Game.players.player.board.ships.forEach((ship) => {
-      Game.controllers.display.render.ship(ship.coordinates);
+      Game.controllers.display.render.ship(
+        'player',
+        ship.coordinates.map((coordiante) => coordiante.value)
+      );
+    });
+
+    Game.players.enemy.placeShips();
+    Game.events.attack();
+
+    Game.players.enemy.board.ships.forEach((ship) => {
+      Game.controllers.display.render.ship(
+        'enemy',
+        ship.coordinates.map((coordiante) => coordiante.value)
+      );
     });
   }
+
+  static switchTurns() {}
 
   static events = {
     highlight(board: HTMLDivElement) {
@@ -64,7 +85,27 @@ class Game {
               if (coordinate) coordiantes.push(coordinate);
             });
             player.board.placeShip(coordiantes);
-            Game.controllers.display.render.ship(coordiantes);
+            Game.controllers.display.render.ship('setup', coordiantes);
+          });
+      });
+    },
+    attack() {
+      const board = document.getElementById('enemy');
+      if (!board) return;
+
+      board.querySelectorAll('.grid').forEach((grid) => {
+        if (grid instanceof HTMLDivElement)
+          grid.addEventListener('click', (event) => {
+            const coordiante = grid.dataset.coordinates as string;
+            const attackStatus =
+              Game.players.enemy.board.recieveAttack(coordiante);
+            Game.controllers.display.render.attack(
+              'enemy',
+              coordiante,
+              attackStatus
+            );
+            if (Game.players.enemy.board.allShipsAreDestroyed())
+              Game.state.isGameOver = true;
           });
       });
     },

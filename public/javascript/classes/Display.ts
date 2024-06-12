@@ -1,12 +1,17 @@
 import Ship from './Ship';
 import Board from './Board';
 import Game from './Game';
+import Coordiante from './Coordinate';
 
 export default class DisplayController {
   render = {
-    ship(coordiantes: string[]) {
+    ship(boardid: string, coordiantes: string[]) {
       coordiantes.forEach((coordiante) => {
-        const grid = document.querySelector(
+        const board = document.getElementById(boardid);
+
+        if (!board) return;
+
+        const grid = board.querySelector(
           `[data-coordinates="${coordiante[0]},${coordiante[2]}"]`
         );
         if (grid) grid.classList.add('ship');
@@ -30,6 +35,17 @@ export default class DisplayController {
 
       return setupboard;
     },
+    attack(enemy: string, coordiante: string, isHit: boolean) {
+      const board = document.getElementById(enemy);
+      if (!board) return;
+
+      const grid = board.querySelector(
+        `[data-coordinates="${coordiante[0]},${coordiante[2]}"]`
+      );
+
+      if (isHit) grid?.classList.add('hit');
+      else grid?.classList.add('miss');
+    },
   };
 
   highlight = {
@@ -37,10 +53,13 @@ export default class DisplayController {
       if (Game.players.player.board.allShipsArePlaced()) return;
 
       const grid = event.currentTarget as HTMLDivElement;
-      DisplayController.getShipGrids(
+      const grids = DisplayController.getShipGrids(
         grid,
         Game.players.player.board.ships[Game.players.player.board.placedships]
-      ).forEach((grid) => grid.classList.add('highlight'));
+      );
+
+      if (DisplayController.isValidPlacement(grids))
+        grids.forEach((grid) => grid.classList.add('highlight'));
     },
 
     remove(event: MouseEvent) {
@@ -48,12 +67,19 @@ export default class DisplayController {
 
       const grid = event.currentTarget as HTMLDivElement;
 
-      DisplayController.getShipGrids(
+      const grids = DisplayController.getShipGrids(
         grid,
         Game.players.player.board.ships[Game.players.player.board.placedships]
-      ).forEach((grid) => grid.classList.remove('highlight'));
+      );
+
+      grids.forEach((grid) => grid.classList.remove('highlight'));
     },
   };
+
+  static isValidPlacement(grids: HTMLDivElement[]) {
+    const board = Game.players.player.board;
+    return grids.length === board.ships[board.placedships].size;
+  }
 
   static create = {
     board(id: string, Board: Board) {

@@ -1,3 +1,4 @@
+import Coordiante from './Coordinate';
 import Ship from './Ship';
 export default class Board {
   public size: number;
@@ -23,9 +24,31 @@ export default class Board {
       throw new Error('All ships have been placed');
     }
 
-    this._ships[this.placedships].coordinates = coordinates;
+    this._ships[this.placedships].coordinates = coordinates.map(
+      (coordinate) => new Coordiante(coordinate)
+    );
+
     this.placedships++;
   }
 
-  recieveAttack(coordinates: number[]) {}
+  recieveAttack(coordinates: string) {
+    let coordianteIsHit: boolean = false;
+
+    this._ships.forEach((ship) => {
+      const coordiante = ship.coordinates.filter(
+        (coordinate) => coordinate.value === coordinates
+      )[0];
+
+      if (coordiante) {
+        coordiante.hit = true;
+        coordianteIsHit = true;
+      }
+    });
+
+    return coordianteIsHit;
+  }
+
+  allShipsAreDestroyed() {
+    return this._ships.every((ship) => ship.destroyed());
+  }
 }
