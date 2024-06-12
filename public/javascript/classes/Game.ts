@@ -12,7 +12,10 @@ class Game {
   };
 
   static state = {
-    currentPlayer: Game.players.player,
+    current: {
+      player: Game.players.player,
+      enemy: Game.players.enemy,
+    },
     isGameOver: false,
   };
 
@@ -41,13 +44,18 @@ class Game {
 
     Game.players.enemy.board.ships.forEach((ship) => {
       Game.controllers.display.render.ship(
-        'enemy',
+        Game.state.current.enemy.type === 'ENEMY' ? 'enemy' : 'player',
         ship.coordinates.map((coordiante) => coordiante.value)
       );
     });
   }
 
-  static switchTurns() {}
+  static switchTurns() {
+    const players = Game.state;
+    if (players.current.player.type === 'PLAYER')
+      players.current.player = players.current.enemy;
+    else players.current.player = players.current.enemy;
+  }
 
   static events = {
     highlight(board: HTMLDivElement) {
@@ -95,18 +103,36 @@ class Game {
 
       board.querySelectorAll('.grid').forEach((grid) => {
         if (grid instanceof HTMLDivElement)
-          grid.addEventListener('click', (event) => {
-            const coordiante = grid.dataset.coordinates as string;
-            const attackStatus =
-              Game.players.enemy.board.recieveAttack(coordiante);
-            Game.controllers.display.render.attack(
-              'enemy',
-              coordiante,
-              attackStatus
-            );
-            if (Game.players.enemy.board.allShipsAreDestroyed())
-              Game.state.isGameOver = true;
-          });
+          grid.addEventListener(
+            'click',
+            (event) => {
+              const coordiante = grid.dataset.coordinates as string;
+              const attackStatus =
+                Game.players.enemy.board.recieveAttack(coordiante);
+              Game.controllers.display.render.attack(
+                'enemy',
+                coordiante,
+                attackStatus
+              );
+
+              if (Game.players.enemy.board.allShipsAreDestroyed()) {
+                Game.state.isGameOver = true;
+                return;
+              }
+
+              Game.switchTurns();
+              const enemycoordiantes =
+                Game.players.enemy.genarateRandomCoordinates();
+              const result =
+                Game.players.player.board.recieveAttack(enemycoordiantes);
+              Game.controllers.display.render.attack(
+                'player',
+                enemycoordiantes,
+                result
+              );
+            },
+            { once: true }
+          );
       });
     },
   };
