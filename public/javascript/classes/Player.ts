@@ -1,21 +1,23 @@
+import { Playertype } from '../../../types';
 import Board from './Board';
+import Game from './Game';
 
 class Player {
-  public name: string;
-  protected board: Board;
+  public board: Board;
+  private __type__: Playertype;
   private coordinatesUsed: number[];
 
-  constructor(name: string) {
-    this.name = name;
-    this.coordinatesUsed = [];
+  constructor(type: Playertype) {
+    this.__type__ = type;
     this.board = new Board();
+    this.coordinatesUsed = [];
   }
 
-  placeShip(coordinates: number[]) {
-    this.board.shipLocations = coordinates;
+  get type() {
+    return this.__type__;
   }
-
-  attack(coordinates: number[], board: Board) {
-    return board.recieveAttack(coordinates);
-  }
+  
+  
+  
 }
+export default Player;
