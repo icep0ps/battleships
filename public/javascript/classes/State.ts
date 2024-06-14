@@ -1,11 +1,9 @@
-import { isDeepStrictEqual } from 'util';
-import { GameStatus } from '../../../types';
-import Computer from './Enemy';
 import Player from './Player';
+import Computer from './Enemy';
+import { GameStatus } from '../../../types';
 
 type status = 'status';
 type current = 'current';
-
 type keys = status | current;
 
 class State {
@@ -13,12 +11,23 @@ class State {
 
   current: {
     player: Player;
-    enemey: Player;
+    enemy: Computer;
   };
+
+  players: {
+    player: Player;
+    enemy: Computer;
+  };
+
   constructor() {
     this.status = 'PLAYERS-SETUP';
     this.current = {
-      enemey: new Computer(),
+      enemy: new Computer(),
+      player: new Player('PLAYER'),
+    };
+
+    this.players = {
+      enemy: new Computer(),
       player: new Player('PLAYER'),
     };
   }
