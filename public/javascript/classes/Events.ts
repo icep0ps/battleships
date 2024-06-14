@@ -41,6 +41,8 @@ class Events {
         return;
       }
     });
+
+    grid.style.pointerEvents = 'none';
   };
 
   placeShip = (event: MouseEvent) => {
