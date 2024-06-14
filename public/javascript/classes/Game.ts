@@ -1,120 +1,91 @@
-import Player from './Player';
-import Computer from './Enemy';
-import DisplayController from './Display';
-import { GameStatus } from '../../../types';
 import State from './State';
+import Display from './Display';
+import Events from './Events';
 class Game {
-  static players: {
-    player: Player;
-    enemy: Computer;
-  } = {
-    enemy: new Computer(),
-    player: new Player('PLAYER'),
+  state: State;
+
+  controllers: {
+    events: Events;
+    display: Display;
   };
 
-  static state = new State();
+  constructor() {
+    this.state = new State();
+    const displayController = new Display(this);
 
-  static initialize() {
-    console.log('Starting game...');
-    const board = DisplayController.render.setupboard();
-
-    // add event lisiteners
-
-    Game.addEventListenersToGrids(
-      board,
-      'mouseenter',
-      DisplayController.highlight.add
-    );
-
-    Game.addEventListenersToGrids(
-      board,
-      'mouseleave',
-      DisplayController.highlight.remove
-    );
-
-    Game.addEventListenersToGrids(board, 'click', Game.events.placeShip);
+    this.controllers = {
+      // display before state
+      display: displayController,
+      events: new Events(this.state, displayController),
+    };
   }
 
-  static start() {
-    document.getElementById('setup')?.remove();
-    const { enemy } = DisplayController.render.gameboards();
+  initialize() {
+    const { player: board } = this.controllers.display.gameboards();
+    this.state.players.player.generateShipCoordinates();
+    this.state.players.player.placeShips();
 
-    // add event lisiteners
-
-    Game.players.player.board.ships.forEach((ship) => {
-      DisplayController.render.ship(
+    this.state.players.player.board.ships.forEach((ship) => {
+      this.controllers.display.ship(
         'player',
         ship.coordinates.map((coordiante) => coordiante.value)
       );
     });
 
-    Game.addEventListenersToGrids(enemy, 'click', Game.events.attack);
+    // add event lisiteners
+    this.addEventListenersToGrids(
+      board,
+      'mouseenter',
+      this.controllers.events.addHighlight
+    );
 
-    Game.players.enemy.placeShips();
+    this.addEventListenersToGrids(
+      board,
+      'mouseleave',
+      this.controllers.events.removeHighlight
+    );
+
+    this.addEventListenersToGrids(
+      board,
+      'click',
+      this.controllers.events.placeShip.bind(this.controllers.display),
+      {
+        once: true,
+      }
+    );
   }
 
-  static switchTurns() {
-    const players = Game.state;
-    if (players.current.player.type === 'PLAYER')
-      Game.state.setState('current', {
-        player: players.current.enemey,
-        enemy: players.current.player,
-      });
+  start(enemybaord: HTMLElement) {
+    document.getElementById('options')?.remove();
 
-    if (players.current.player.type === 'ENEMY')
-      Game.state.setState('current', {
-        player: players.current.player,
-        enemy: players.current.enemey,
-      });
+    // add event lisiteners
+
+    this.state.players.player.board.ships.forEach((ship) => {
+      this.controllers.display.ship(
+        'player',
+        ship.coordinates.map((coordiante) => coordiante.value)
+      );
+    });
+
+    this.addEventListenersToGrids(
+      enemybaord,
+      'click',
+      this.controllers.events.attack
+    );
+
+    // computer generate ships
+    this.state.players.enemy.placeShips();
   }
 
-  static events = {
-    placeShip(event: MouseEvent) {
-      const playerBoard = Game.players.player.board;
-
-      const grid = event.currentTarget as HTMLDivElement;
-
-      if (Game.players.player.board.allShipsArePlaced()) {
-        Game.start();
-        return;
-      }
-      const coordiantes: string[] = [];
-      DisplayController.getShipGrids(
-        grid,
-        playerBoard.ships[playerBoard.placedships]
-      ).forEach((grid) => {
-        const coordinate = grid.dataset.coordinates;
-        if (coordinate) coordiantes.push(coordinate);
-      });
-      playerBoard.placeShip(coordiantes);
-      DisplayController.render.ship('setup', coordiantes);
-    },
-
-    attack(event: MouseEvent) {
-      const grid = event.currentTarget as HTMLDivElement;
-      const coordiante = grid.dataset.coordinates as string;
-      const attackStatus = Game.players.enemy.board.recieveAttack(coordiante);
-      DisplayController.render.attack('enemy', coordiante, attackStatus);
-
-      if (Game.players.enemy.board.allShipsAreDestroyed()) {
-        Game.state.setState('status', 'GAME-OVER');
-        return;
-      }
-
-      const enemycoordiantes = Game.players.enemy.genarateRandomCoordinates();
-      const result = Game.players.player.board.recieveAttack(enemycoordiantes);
-      DisplayController.render.attack('player', enemycoordiantes, result);
-    },
-  };
-
-  static addEventListenersToGrids(
-    board: HTMLDivElement,
+  addEventListenersToGrids(
+    board: HTMLElement,
     event: keyof HTMLElementEventMap,
-    callback: any
+    callback: any,
+    options?: boolean | AddEventListenerOptions | undefined
   ) {
     board.querySelectorAll('.grid').forEach((grid) => {
       if (grid instanceof HTMLDivElement)
-        grid.addEventListener(event, callback);
+        grid.addEventListener(event, callback, options);
     });
   }
 }
