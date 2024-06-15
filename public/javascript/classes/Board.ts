@@ -4,15 +4,28 @@ export default class Board {
   public size: number;
   private _ships: Ship[];
   public placedships: number;
-
+  private _coordiates: string[];
   constructor(size: number = 8) {
     this.size = size;
     this.placedships = 0;
+    this._coordiates = this.generateCoordinates();
     this._ships = [new Ship(5), new Ship(4), new Ship(3), new Ship(3)];
   }
 
   get ships() {
     return this._ships;
+  }
+
+  get coordinates() {
+    return this._coordiates;
+  }
+
+  set coordinates(coordiantes: string[]) {
+    this._coordiates = coordiantes;
+  }
+
+  set ships(ships: Ship[]) {
+    this._ships = ships;
   }
 
   allShipsArePlaced() {
@@ -27,7 +40,6 @@ export default class Board {
     this._ships[this.placedships].coordinates = coordinates.map(
       (coordinate) => new Coordiante(coordinate)
     );
-
     this.placedships++;
   }
 
@@ -50,5 +62,16 @@ export default class Board {
 
   allShipsAreDestroyed() {
     return this._ships.every((ship) => ship.destroyed());
+  }
+
+  generateCoordinates() {
+    const coordinates: string[] = [];
+    for (let x = 0; x < this.size; x++) {
+      for (let y = 0; y < this.size; y++) {
+        coordinates.push(x.toString() + ',' + y.toString());
+      }
+    }
+
+    return coordinates;
   }
 }
