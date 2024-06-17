@@ -5,7 +5,7 @@ export default class Board {
   private _ships: Ship[];
   public placedships: number;
   private _coordiates: string[];
-  constructor(size: number = 8) {
+  constructor(size: number = 10) {
     this.size = size;
     this.placedships = 0;
     this._coordiates = this.generateCoordinates();
