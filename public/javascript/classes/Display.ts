@@ -57,13 +57,16 @@ export default class Display {
       `[data-coordinates="${coordiante[0]},${coordiante[2]}"]`
     );
 
-    if (isHit) grid?.setAttribute('class', 'hit');
-    else grid?.setAttribute('class', 'miss');
+    if (grid) {
+      if (isHit) grid.setAttribute('class', 'hit');
+      else grid.setAttribute('class', 'miss');
+      grid.classList.remove('grid');
+    }
   }
 
   isValidPlacement(grids: HTMLDivElement[]) {
     const board = this.game.state.players.player.board;
-    return grids.length === board.ships[board.placedships].size;
+    return grids.length === board.ships[board.indexOfUnplacedShip].size;
   }
 
   createBoard = (id: string, size: number, boardTitle: string) => {
@@ -90,6 +93,7 @@ export default class Display {
       startBtn.addEventListener('click', () => this.game.start(board));
     }
 
+    //change this so that it uses the grids in the board class to create dom grids
     for (let x = 0; x < size; x++) {
       for (let y = 0; y < size; y++) {
         const grid = this.game.controllers.display.createGrids(
