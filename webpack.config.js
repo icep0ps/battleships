@@ -33,11 +33,8 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    clean: true,
   },
-  plugins: [
-    new PugPlugin({
-      entry: 'views',
-      output: '',
-    }),
-  ],
+  plugins: [],
+  watch: true,
 };
