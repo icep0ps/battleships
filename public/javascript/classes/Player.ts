@@ -1,6 +1,5 @@
-import { Playertype } from '../../../types';
 import Board from './Board';
-import Game from './Game';
+import { Playertype } from '../../../types';
 
 class Player {
   public board: Board;
@@ -15,33 +14,15 @@ class Player {
     return this.__type__;
   }
 
-  occupiedCoordinates() {
-    const coordiantes = this.board.ships.map((ship) =>
-      ship.coordinates.map((coordinate) => coordinate.value)
-    );
-
-    const allShipsCoordinates = coordiantes.reduce((prev, current) =>
-      prev.concat(current)
-    );
-
-    return allShipsCoordinates
-      .map((coordiante) => [
-        coordiante,
-        ...this.getCoordinatesSurroundingGrids(coordiante),
-      ])
-      .reduce((prev, current) => prev.concat(current), []);
-  }
-
-  public placeShips() {
+  placeShips() {
     this.board.ships.forEach((ship) => {
-      const coordiantes = this.generateShipCoordinates();
+      const coordiantes = this.generateShipCoordinates(ship.size);
       this.board.placeShip(coordiantes);
     });
   }
 
-  generateShipCoordinates() {
+  generateShipCoordinates(shipSize: number) {
     const shipCoordinates = [];
-    const shipSize = this.board.ships[this.board.placedships].size;
 
     // Adjust filtering to select appropriate starting coordinates
     const coordiantes = this.board.coordinates.filter(
@@ -49,7 +30,7 @@ class Player {
         const [positionX, positionY] = coordiante.split(',').map(Number);
         return (
           positionY <= this.board.size - shipSize &&
-          this.coordianteSupportsShipSize(coordiante)
+          this.coordianteSupportsShipSize(coordiante, shipSize)
         );
       }
     );
@@ -58,7 +39,7 @@ class Player {
     if (coordiantes.length === 0) {
       console.error(
         'No valid coordinates available for placing the ship.',
-        this.board.ships[this.board.placedships]
+        this.board.ships[this.board.indexOfUnplacedShip]
       );
       return [];
     }
@@ -99,22 +80,6 @@ class Player {
     return shipCoordinates;
   }
 
-  private coordianteSupportsShipSize = (coordinate: string) => {
-    if (!coordinate) return false;
-    const nextShipCoordinates = [];
-    const shipsSize = this.board.ships[this.board.placedships].size;
-
-    for (let i = 0; i < shipsSize; i++) {
-      const [positionX, positionY] = coordinate.split(',').map(Number);
-      const nextPositionY = positionY + i;
-      nextShipCoordinates.push(`${positionX},${nextPositionY}`);
-    }
-
-    return nextShipCoordinates.every((coord) =>
-      this.board.coordinates.includes(coord)
-    );
-  };
-
   getCoordinatesSurroundingGrids(coordiante: string) {
     const [positionX, positionY] = coordiante.split(',').map(Number);
 
@@ -138,5 +103,23 @@ class Player {
       bottomright,
     ];
   }
+
+  private coordianteSupportsShipSize = (
+    coordinate: string,
+    shipSize: number
+  ) => {
+    if (!coordinate) return false;
+    const nextShipCoordinates = [];
+
+    for (let i = 0; i < shipSize; i++) {
+      const [positionX, positionY] = coordinate.split(',').map(Number);
+      const nextPositionY = positionY + i;
+      nextShipCoordinates.push(`${positionX},${nextPositionY}`);
+    }
+
+    return nextShipCoordinates.every((coord) =>
+      this.board.coordinates.includes(coord)
+    );
+  };
 }
 export default Player;
