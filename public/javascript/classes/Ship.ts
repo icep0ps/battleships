@@ -2,15 +2,15 @@ import Coordiante from './Coordinate';
 
 export default class Ship {
   public size: number;
-  public _coordinates: Coordiante[];
+  private __coordinates__: Coordiante[];
 
   constructor(size: number) {
     this.size = size;
-    this._coordinates = [];
+    this.__coordinates__ = [];
   }
 
   get coordinates() {
-    return this._coordinates;
+    return this.__coordinates__;
   }
 
   set coordinates(coordinates: Coordiante[]) {
@@ -21,17 +21,17 @@ export default class Ship {
         throw new Error('Invalid coordiantes format, Got: ' + coordinates);
       }
 
-      if (this._coordinates.length > this.size) {
+      if (this.__coordinates__.length > this.size) {
         throw new Error(
           `Too many coordinates ship is size ${this.size} but got more that ${this.size} coordinates`
         );
       }
 
-      this._coordinates.push(coordinate);
+      this.__coordinates__.push(coordinate);
     });
   }
 
-  destroyed() {
+  isDestroyed() {
     return this.coordinates.every((coordinate) => coordinate.hit);
   }
 }

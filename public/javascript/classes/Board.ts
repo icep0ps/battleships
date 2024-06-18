@@ -2,51 +2,64 @@ import Coordiante from './Coordinate';
 import Ship from './Ship';
 export default class Board {
   public size: number;
-  private _ships: Ship[];
-  public placedships: number;
-  private _coordiates: string[];
+  private __ships__: Ship[];
+  private __coordiates__: string[];
+
   constructor(size: number = 10) {
     this.size = size;
-    this.placedships = 0;
-    this._coordiates = this.generateCoordinates();
-    this._ships = [new Ship(5), new Ship(4), new Ship(3), new Ship(3)];
+    this.__coordiates__ = this.generateCoordinates();
+    this.__ships__ = [
+      new Ship(4),
+      new Ship(3),
+      new Ship(3),
+      new Ship(2),
+      new Ship(2),
+      new Ship(1),
+      new Ship(1),
+      new Ship(1),
+      new Ship(1),
+    ];
   }
 
   get ships() {
-    return this._ships;
+    return this.__ships__;
   }
 
   get coordinates() {
-    return this._coordiates;
+    return this.__coordiates__;
   }
 
   set coordinates(coordiantes: string[]) {
-    this._coordiates = coordiantes;
+    this.__coordiates__ = coordiantes;
   }
 
   set ships(ships: Ship[]) {
-    this._ships = ships;
+    this.__ships__ = ships;
+  }
+
+  get indexOfUnplacedShip() {
+    return this.__ships__.findIndex((ship) => ship.coordinates.length === 0);
   }
 
   allShipsArePlaced() {
-    return this.placedships === this._ships.length;
+    return this.__ships__.every(
+      (ship) => ship.coordinates.length === ship.size
+    );
   }
 
   placeShip(coordinates: string[]) {
-    if (this.placedships === this._ships.length) {
-      throw new Error('All ships have been placed');
-    }
+    if (this.indexOfUnplacedShip === undefined)
+      throw new Error('Faild to place ship: All board ships have been placed');
 
-    this._ships[this.placedships].coordinates = coordinates.map(
+    this.__ships__[this.indexOfUnplacedShip].coordinates = coordinates.map(
       (coordinate) => new Coordiante(coordinate)
     );
-    this.placedships++;
   }
 
   recieveAttack(coordinates: string) {
     let coordianteIsHit: boolean = false;
 
-    this._ships.forEach((ship) => {
+    this.__ships__.forEach((ship) => {
       const coordiante = ship.coordinates.filter(
         (coordinate) => coordinate.value === coordinates
       )[0];
@@ -61,7 +74,7 @@ export default class Board {
   }
 
   allShipsAreDestroyed() {
-    return this._ships.every((ship) => ship.destroyed());
+    return this.__ships__.every((ship) => ship.isDestroyed());
   }
 
   generateCoordinates() {
