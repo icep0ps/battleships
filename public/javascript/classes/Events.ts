@@ -1,6 +1,5 @@
-import Display from './Display';
-import Game from './Game';
 import State from './State';
+import Display from './Display';
 
 class Events {
   private state: State;
@@ -11,15 +10,17 @@ class Events {
     this.DisplayController = displayController;
   }
 
-  attack = (event: MouseEvent) => {
+  attack = async (event: MouseEvent) => {
     if (this.state.status === 'GAME-OVER') return;
+    if (this.state.current.player.type === 'ENEMY') return;
 
     const grid = event.currentTarget as HTMLDivElement;
     const coordiante = grid.dataset.coordinates as string;
-    const attackStatus =
+    const attackResult =
       this.state.players.enemy.board.recieveAttack(coordiante);
 
-    this.DisplayController.attack('enemy', coordiante, attackStatus);
+    this.DisplayController.attack('enemy', coordiante, attackResult);
+    grid.style.pointerEvents = 'none';
 
     if (this.state.players.enemy.board.allShipsAreDestroyed()) {
       this.state.setState('status', 'GAME-OVER');
@@ -27,22 +28,36 @@ class Events {
       return;
     }
 
-    setTimeout(() => {
-      const enemycoordiantes =
-        this.state.players.enemy.genarateRandomCoordinates();
-      const result =
-        this.state.players.player.board.recieveAttack(enemycoordiantes);
+    if (attackResult) return;
 
-      this.DisplayController.attack('player', enemycoordiantes, result);
+    this.switchCurrentPlayer();
 
-      if (this.state.players.player.board.allShipsAreDestroyed()) {
-        this.state.setState('status', 'GAME-OVER');
-        this.DisplayController.showGameoverDialog('You lose');
-        return;
-      }
-    });
+    let enemyAttactResult;
 
-    grid.style.pointerEvents = 'none';
+    do {
+      enemyAttactResult = await new Promise((resolve) => {
+        setTimeout(() => {
+          const enemyCoordinates =
+            this.state.players.enemy.genarateRandomCoordinates();
+          const result =
+            this.state.players.player.board.recieveAttack(enemyCoordinates);
+
+          this.DisplayController.attack('player', enemyCoordinates, result);
+
+          if (result === false) {
+            this.switchCurrentPlayer();
+          }
+
+          if (this.state.players.player.board.allShipsAreDestroyed()) {
+            this.state.setState('status', 'GAME-OVER');
+            this.DisplayController.showGameoverDialog('You lose');
+            resolve(null); // Exit the loop
+          } else {
+            resolve(result);
+          }
+        }, 900);
+      });
+    } while (enemyAttactResult);
   };
 
   placeShip = (event: MouseEvent) => {
@@ -52,7 +67,7 @@ class Events {
 
     this.DisplayController.getShipGrids(
       grid,
-      playerBoard.ships[playerBoard.placedships]
+      playerBoard.ships[playerBoard.indexOfUnplacedShip]
     ).forEach((grid) => {
       const coordinate = grid.dataset.coordinates;
       if (coordinate) coordiantes.push(coordinate);
@@ -62,6 +77,20 @@ class Events {
     this.DisplayController.ship('player', coordiantes);
   };
 
+  switchCurrentPlayer() {
+    if (this.state.current.player.type === 'PLAYER')
+      return this.state.setState('current', {
+        player: this.state.players.enemy,
+        enemy: this.state.players.player,
+      });
+
+    if (this.state.current.player.type === 'ENEMY')
+      return this.state.setState('current', {
+        player: this.state.players.player,
+        enemy: this.state.players.enemy,
+      });
+  }
+
   addHighlight = (event: MouseEvent) => {
     const player = this.state.players.player;
 
@@ -70,7 +99,7 @@ class Events {
     const grid = event.currentTarget as HTMLDivElement;
     const grids = this.DisplayController.getShipGrids(
       grid,
-      player.board.ships[player.board.placedships]
+      player.board.ships[player.board.indexOfUnplacedShip]
     );
 
     if (this.DisplayController.isValidPlacement(grids))
@@ -85,7 +114,7 @@ class Events {
     const grid = event.currentTarget as HTMLDivElement;
     const grids = this.DisplayController.getShipGrids(
       grid,
-      player.board.ships[player.board.placedships]
+      player.board.ships[player.board.indexOfUnplacedShip]
     );
 
     grids.forEach((grid) => grid.classList.remove('highlight'));
