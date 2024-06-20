@@ -1,5 +1,4 @@
 import express, { type Request, type Response } from 'express';
-import path = require('path');
 
 const app = express();
 const port = 3000;

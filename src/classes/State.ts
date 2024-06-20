@@ -1,6 +1,6 @@
 import Player from './Player';
 import Computer from './Enemy';
-import { GameStatus } from '../../../types';
+import { GameStatus } from '../../types';
 
 type status = 'status';
 type current = 'current';

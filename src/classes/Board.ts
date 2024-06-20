@@ -56,8 +56,8 @@ export default class Board {
     );
   }
 
-  recieveAttack(coordinates: string) {
-    let coordianteIsHit: boolean = false;
+  recieveAttack(coordinates: string): null | Ship {
+    let shipHit = null;
 
     this.__ships__.forEach((ship) => {
       const coordiante = ship.coordinates.filter(
@@ -66,11 +66,11 @@ export default class Board {
 
       if (coordiante) {
         coordiante.hit = true;
-        coordianteIsHit = true;
+        shipHit = ship;
       }
     });
 
-    return coordianteIsHit;
+    return shipHit;
   }
 
   allShipsAreDestroyed() {

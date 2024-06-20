@@ -1,5 +1,6 @@
 import Board from './Board';
-import { Playertype } from '../../../types';
+import { Playertype } from '../../types';
+import getCoordinatesSurroundingGrids from '../utils/getCoordinatesSurroundingGrids';
 
 class Player {
   public board: Board;
@@ -37,6 +38,7 @@ class Player {
 
     // Ensure there are valid coordinates available
     if (coordiantes.length === 0) {
+      window.alert('No valid coordinates available for placing the ship.');
       console.error(
         'No valid coordinates available for placing the ship.',
         this.board.ships[this.board.indexOfUnplacedShip]
@@ -62,7 +64,7 @@ class Player {
       ...new Set(
         shipCoordinates.flatMap((coord) => [
           coord,
-          ...this.getCoordinatesSurroundingGrids(coord),
+          ...getCoordinatesSurroundingGrids(coord),
         ])
       ),
     ];
@@ -78,30 +80,6 @@ class Player {
       coordinatesThatExcludeShipCoordinatesAndTheirSurrounding;
 
     return shipCoordinates;
-  }
-
-  getCoordinatesSurroundingGrids(coordiante: string) {
-    const [positionX, positionY] = coordiante.split(',').map(Number);
-
-    const top = `${positionX},${positionY - 1}`;
-    const bottom = `${positionX},${positionY + 1}`;
-    const left = `${positionX - 1},${positionY}`;
-    const right = `${positionX + 1},${positionY}`;
-    const topleft = `${positionX - 1},${positionY - 1}`;
-    const topright = `${positionX + 1},${positionY - 1}`;
-    const bottomleft = `${positionX - 1},${positionY + 1}`;
-    const bottomright = `${positionX + 1},${positionY + 1}`;
-
-    return [
-      top,
-      bottom,
-      left,
-      right,
-      topleft,
-      topright,
-      bottomleft,
-      bottomright,
-    ];
   }
 
   private coordianteSupportsShipSize = (

@@ -1,6 +1,7 @@
 import State from './State';
 import Display from './Display';
 import Events from './Events';
+
 class Game {
   state: State;
 
@@ -22,7 +23,6 @@ class Game {
 
   initialize() {
     const { player: board } = this.controllers.display.gameboards();
-    this.state.players.player.generateShipCoordinates();
     this.state.players.player.placeShips();
 
     this.state.players.player.board.ships.forEach((ship) => {
@@ -70,7 +70,8 @@ class Game {
     this.addEventListenersToGrids(
       enemybaord,
       'click',
-      this.controllers.events.attack
+      this.controllers.events.attack,
+      { capture: true }
     );
 
     // computer generate ships
@@ -83,8 +84,8 @@ class Game {
     callback: any,
     options?: boolean | AddEventListenerOptions | undefined
   ) {
-    board.querySelectorAll('.grid').forEach((grid) => {
-      if (grid instanceof HTMLDivElement)
+    board.querySelectorAll('td').forEach((grid) => {
+      if (grid instanceof HTMLTableCellElement)
         grid.addEventListener(event, callback, options);
     });
   }
