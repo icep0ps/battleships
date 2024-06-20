@@ -27,22 +27,19 @@ section {
   justify-content: space-between;
 }
 
-.grid {
-  width: 30px;
-  height: 30px;
-  border-radius: 5px;
-  border: 0.5px solid black;
-  cursor: pointer;
+table {
+  margin: 0;
+  border-collapse: collapse;
+  cursor: default;
+  display: inline-block;
+  position: relative;
 }
 
-.board {
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  grid-template-rows: repeat(10, 1fr);
-  height: fit-content;
-  width: fit-content;
-  gap: 3px;
-  position: relative;
+td {
+  width: 35px;
+  height: 35px;
+  border: 1px solid black;
+  cursor: pointer;
 }
 
 #options ~ .grid {
@@ -70,30 +67,30 @@ button {
 }
 
 .highlight {
-  border-radius: 10px;
   border: 3px solid white;
   transition: ease-in 0.2s;
   background-color: black;
 }
 
 .ship {
-  background-color: goldenrod !important;
+  text-align: center;
+  background-color: rgb(39, 39, 255);
 }
 
 .hit {
-  background-color: red;
-  border: 3px solid white;
+  color: red;
+  border: 2px solid red;
+  text-align: center;
   transition: ease-in 0.2s;
-  border-radius: 10px;
 }
 
 .miss {
-  background-color: dodgerblue;
-  border: 3px solid white;
+  text-align: center;
   transition: ease-in 0.2s;
-  border-radius: 10px;
 }
 
-.used {
-  background-color: grey;
+.surrounding-destroyed {
+  content: ' . ';
+  text-align: center;
+  background-color: #f2f4f8;
 }
