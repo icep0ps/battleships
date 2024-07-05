@@ -1,5 +1,5 @@
-import Board from '../../public/javascript/classes/Board';
-import Player from '../../public/javascript/classes/Player';
+import Board from '../../src/classes/Board';
+import Player from '../../src/classes/Player';
 
 let board = new Board();
 

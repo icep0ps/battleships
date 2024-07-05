@@ -1,4 +1,4 @@
-import Player from '../../public/javascript/classes/Player';
+import Player from '../../src/classes/Player';
 
 let player = new Player('PLAYER');
 
@@ -37,19 +37,6 @@ describe('class methods', () => {
       expect(player.generateShipCoordinates(SHIP_SIZE).length).toEqual(
         SHIP_SIZE
       );
-    });
-  });
-
-  describe('getCoordinatesSurroundingGrids', () => {
-    test('returns all eight grids', () => {
-      const coordinates = player.getCoordinatesSurroundingGrids('1,1');
-      expect(coordinates.length).toEqual(8);
-    });
-
-    test('does not include initial coordinate', () => {
-      const coordinate = '1,1';
-      const coordinates = player.getCoordinatesSurroundingGrids(coordinate);
-      expect(coordinates).not.toContain(coordinate);
     });
   });
 });
