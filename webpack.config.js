@@ -2,7 +2,7 @@ const path = require('path');
 const PugPlugin = require('pug-plugin');
 
 module.exports = {
-  entry: './public/javascript/main.ts',
+  entry: './src/main.ts',
   devtool: 'inline-source-map',
   module: {
     rules: [
