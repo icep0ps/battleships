@@ -1,4 +1,4 @@
-class Coordiante {
+class Coordinate {
   value: string;
   hit: boolean;
 
@@ -7,4 +7,4 @@ class Coordiante {
     this.hit = false;
   }
 }
-export default Coordiante;
+export default Coordinate;

@@ -94,7 +94,7 @@ class Events {
     return new Promise((resolve) => {
       setTimeout(() => {
         const enemyCoordinates =
-          this.state.players.enemy.genarateRandomCoordinates();
+          this.state.players.enemy.generateRandomCoordinates();
         const playersShip =
           this.state.players.player.board.recieveAttack(enemyCoordinates);
 

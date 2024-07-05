@@ -1,8 +1,8 @@
-import Coordiante from './Coordinate';
+import Coordinate from './Coordinate';
 
 export default class Ship {
   public size: number;
-  private __coordinates__: Coordiante[];
+  private __coordinates__: Coordinate[];
 
   constructor(size: number) {
     this.size = size;
@@ -13,12 +13,12 @@ export default class Ship {
     return this.__coordinates__;
   }
 
-  set coordinates(coordinates: Coordiante[]) {
-    const validCoordiantesFormat = new RegExp(/^[0-9],[0-9]$/);
+  set coordinates(coordinates: Coordinate[]) {
+    const validCoordinatesFormat = new RegExp(/^[0-9],[0-9]$/);
 
     coordinates.forEach((coordinate) => {
-      if (!coordinate.value.match(validCoordiantesFormat)) {
-        throw new Error('Invalid coordiantes format, Got: ' + coordinates);
+      if (!coordinate.value.match(validCoordinatesFormat)) {
+        throw new Error('Invalid coordinates format, Got: ' + coordinates);
       }
 
       if (this.__coordinates__.length > this.size) {

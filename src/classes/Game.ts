@@ -28,11 +28,11 @@ class Game {
     this.state.players.player.board.ships.forEach((ship) => {
       this.controllers.display.ship(
         'player',
-        ship.coordinates.map((coordiante) => coordiante.value)
+        ship.coordinates.map((coordinate) => coordinate.value)
       );
     });
 
-    // add event lisiteners
+    // add event listeners
     this.addEventListenersToGrids(
       board,
       'mouseenter',
@@ -58,12 +58,12 @@ class Game {
   start(enemybaord: HTMLElement) {
     document.getElementById('options')?.remove();
 
-    // add event lisiteners
+    // add event listeners
 
     this.state.players.player.board.ships.forEach((ship) => {
       this.controllers.display.ship(
         'player',
-        ship.coordinates.map((coordiante) => coordiante.value)
+        ship.coordinates.map((coordinate) => coordinate.value)
       );
     });
 

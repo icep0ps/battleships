@@ -9,14 +9,14 @@ export default class Display {
     this.game = game;
   }
 
-  ship(boardid: string, coordiantes: string[]) {
-    coordiantes.forEach((coordiante) => {
+  ship(boardid: string, coordinates: string[]) {
+    coordinates.forEach((coordinate) => {
       const board = document.getElementById(boardid);
 
       if (!board) return;
 
       const grid = board.querySelector(
-        `[data-coordinates="${coordiante[0]},${coordiante[2]}"]`
+        `[data-coordinates="${coordinate[0]},${coordinate[2]}"]`
       );
       if (grid) {
         grid.classList.add('ship');
@@ -52,12 +52,12 @@ export default class Display {
     return { player: playerboard, enemy: enemyboard };
   };
 
-  attack(enemy: string, coordiante: string, shipHit: Ship | null) {
+  attack(enemy: string, coordinate: string, shipHit: Ship | null) {
     const board = document.getElementById(enemy);
     if (!board) return;
 
     const grid = board.querySelector(
-      `[data-coordinates="${coordiante[0]},${coordiante[2]}"]`
+      `[data-coordinates="${coordinate[0]},${coordinate[2]}"]`
     );
 
     if (grid) {
