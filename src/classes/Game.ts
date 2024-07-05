@@ -56,8 +56,7 @@ class Game {
   }
 
   start(enemybaord: HTMLElement) {
-    document.getElementById('options')?.remove();
-
+    this.controllers.display.changeBoardOpacity('player');
     // add event listeners
 
     this.state.players.player.board.ships.forEach((ship) => {

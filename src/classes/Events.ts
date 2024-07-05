@@ -17,7 +17,7 @@ class Events {
     const coordinate = this.getCoordinate(grid);
     if (!coordinate) return;
 
-    const enemyShip = this.state.players.enemy.board.recieveAttack(coordinate);
+    const enemyShip = this.state.players.enemy.board.receiveAttack(coordinate);
 
     this.displayController.attack('enemy', coordinate, enemyShip);
     grid.style.pointerEvents = 'none';
@@ -96,7 +96,7 @@ class Events {
         const enemyCoordinates =
           this.state.players.enemy.generateRandomCoordinates();
         const playersShip =
-          this.state.players.player.board.recieveAttack(enemyCoordinates);
+          this.state.players.player.board.receiveAttack(enemyCoordinates);
 
         this.displayController.attack('player', enemyCoordinates, playersShip);
 

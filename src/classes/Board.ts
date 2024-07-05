@@ -56,7 +56,7 @@ export default class Board {
     );
   }
 
-  recieveAttack(coordinates: string): null | Ship {
+  receiveAttack(coordinates: string): null | Ship {
     let shipHit = null;
 
     this.__ships__.forEach((ship) => {

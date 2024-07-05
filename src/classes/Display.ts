@@ -1,6 +1,7 @@
 import Ship from './Ship';
 import Game from './Game';
 import getCoordinatesSurroundingGrids from '../utils/getCoordinatesSurroundingGrids';
+import Player from './Player';
 
 export default class Display {
   game: Game;
@@ -52,6 +53,20 @@ export default class Display {
     return { player: playerboard, enemy: enemyboard };
   };
 
+  changeBoardOpacity(currentEnemy: string) {
+    const playerTable = document.getElementById('player-table');
+    const enemyTable = document.getElementById('enemy-table');
+    if (enemyTable && playerTable) {
+      if (currentEnemy !== 'enemy') {
+        playerTable.style.opacity = '0.5';
+        enemyTable.style.opacity = '1';
+      } else {
+        playerTable.style.opacity = '1';
+        enemyTable.style.opacity = '0.5';
+      }
+    }
+  }
+
   attack(enemy: string, coordinate: string, shipHit: Ship | null) {
     const board = document.getElementById(enemy);
     if (!board) return;
@@ -67,6 +82,7 @@ export default class Display {
       } else {
         grid.setAttribute('class', 'miss');
         grid.textContent = '•';
+        this.changeBoardOpacity(enemy);
       }
       grid.classList.remove('grid');
     }
@@ -105,7 +121,14 @@ export default class Display {
 
     const main = document.getElementsByTagName('section')[0];
 
-    const wrapper = this.createElement('table', { className: 'wrapper' }, main);
+    const wrapper = this.createElement(
+      'table',
+      {
+        className: 'wrapper',
+        id: id === 'enemy' ? 'enemy-table' : 'player-table',
+      },
+      main
+    );
 
     const player = this.createElement('h1', null, wrapper);
     player.innerText = boardTitle;
@@ -117,11 +140,9 @@ export default class Display {
     );
 
     if (id === 'enemy') {
-      const options = this.createElement('div', { id: 'options' }, board);
-
-      const startBtn = this.createElement('button', null, options);
-      startBtn.innerText = 'Play';
-      startBtn.addEventListener('click', () => this.game.start(board));
+      const startButton = document.getElementById('start-btn');
+      if (startButton)
+        startButton.addEventListener('click', () => this.game.start(board));
     }
 
     //change this so that it uses the grids in the board class to create dom grids
