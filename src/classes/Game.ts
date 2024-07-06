@@ -56,6 +56,7 @@ class Game {
   }
 
   start(enemybaord: HTMLElement) {
+    this.controllers.display.disableButtons();
     this.controllers.display.changeBoardOpacity('player');
     // add event listeners
 

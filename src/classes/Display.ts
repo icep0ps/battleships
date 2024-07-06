@@ -67,6 +67,11 @@ export default class Display {
     }
   }
 
+  disableButtons() {
+    const buttons = document.querySelectorAll('button');
+    if (buttons) buttons.forEach((button) => (button.disabled = true));
+  }
+
   attack(enemy: string, coordinate: string, shipHit: Ship | null) {
     const board = document.getElementById(enemy);
     if (!board) return;
