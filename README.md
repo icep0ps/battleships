@@ -2,7 +2,7 @@
 
 A classic game of strategy and skill.
 
-![Battleship Game](/public/screenshots/image.png)
+![Battleship Game](/public/screenshots/game.png)
 
 ## Table of Contents
 
