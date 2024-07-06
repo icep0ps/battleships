@@ -47,10 +47,6 @@ td {
   cursor: pointer;
 }
 
-#options ~ .grid {
-  opacity: 0.2;
-}
-
 button {
   padding: 10px 20px;
   border-radius: 10px;
@@ -58,18 +54,6 @@ button {
   cursor: pointer;
   z-index: 10;
   width: fit-content;
-}
-
-#options {
-  padding: 20px;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
 }
 
 .highlight {
@@ -98,9 +82,9 @@ button {
 }
 
 .surrounding-destroyed {
-  content: ' . ';
   text-align: center;
-  background-color: #f2f4f8;
+  color: white;
+  background-color: rgb(182, 182, 182) !important;
 }
 
 #enemy-table {
